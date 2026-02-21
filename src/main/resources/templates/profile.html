@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | My Profile</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/toast.js"></script>
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .profile-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar-upload-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-large-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-overlay {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .upload-overlay:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        .profile-title-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #1e1b4b, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-form-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .profile-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .profile-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+                padding: 2rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .profile-form-card {
+                padding: 1.5rem;
+            }
+
+            .profile-title-section h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link active">
+                    <i class="fas fa-database"></i>
+                    <span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="/generator" class="submenu-link">
+                            <i class="fas fa-plus" style="font-size: 0.8rem; margin-right: 8px;"></i> Add Question
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="/create-paper" class="submenu-link">
+                            <i class="fas fa-file-invoice" style="font-size: 0.8rem; margin-right: 8px;"></i> Create
+                            Paper
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+        </a>
+    </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="top-search-bar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for Questions, Topics, etc...">
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="avatar-upload-container">
+                        <img id="profilePreview"
+                            th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                            class="profile-large-avatar" alt="Large Avatar">
+                        <label for="imageInput" class="upload-overlay">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="imageInput" accept="image/*">
+                    </div>
+                    <div class="profile-title-section">
+                        <h1 th:text="${user.firstName + ' ' + user.lastName}">User Name</h1>
+                        <p class="subtitle" th:text="${user.email}">user@example.com</p>
+                        <div style="margin-top: 1rem;">
+                            <span
+                                style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color); padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;"
+                                th:text="${user.role}">USER</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-form-card">
+                    <form id="profileForm" style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="form-grid" style="width:100%;">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" name="firstName" th:value="${user.firstName}" class="form-control"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" name="lastName" th:value="${user.lastName}" class="form-control"
+                                    required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    Email Address
+                                    <span class="fancy-tooltip"
+                                        data-tooltip="This email is permanently linked to your account and cannot be changed.">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>
+                                </label>
+                                <input type="email" th:value="${user.email}" class="form-control" disabled
+                                    style="background: rgba(0,0,0,0.05);">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="profile-btn" id="saveBtn">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="javascript:void(0)" class="logout-trigger"
+                        style="color: #ef4444; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #ef4444; border-radius: 8px; padding: 10px 24px; transition: all 0.3s ease;">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </a>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <div>
+                    &copy; 2026, made with ❤️ by <a href="" target="_blank"
+                        style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh Shakya</a>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar Dropdown Toggle
+            const toggle = document.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const menuItem = this.closest('.menu-item');
+                    menuItem.classList.toggle('open');
+                });
+            }
+
+            const imageInput = document.getElementById('imageInput');
+            const profilePreview = document.getElementById('profilePreview');
+            const navAvatar = document.querySelector('.user-avatar');
+            const profileForm = document.getElementById('profileForm');
+            const saveBtn = document.getElementById('saveBtn');
+
+            let base64Image = null;
+
+            // Image Preview & Base64 conversion
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        base64Image = event.target.result;
+                        profilePreview.src = base64Image;
+                        // Auto-save image
+                        saveProfile({ profileImage: base64Image });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form Submit
+            profileForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(profileForm);
+                const data = Object.fromEntries(formData.entries());
+                saveProfile(data);
+            });
+
+            async function saveProfile(data) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                try {
+                    const response = await fetch('/api/v1/user/update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        showToast('Profile updated successfully!', 'success');
+                        if (data.profileImage) navAvatar.src = data.profileImage;
+                        // Update name in header if changed
+                        if (data.firstName) {
+                            document.querySelector('.user-name').innerText = data.firstName + ' ' + (data.lastName || '');
+                            document.querySelector('.profile-title-section h1').innerText = data.firstName + ' ' + (data.lastName || '');
+                        }
+                    } else {
+                        showToast('Failed to update profile.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Network error occurred.', 'error');
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                }
+            }
+
+            // Mobile Sidebar Toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            if (sidebar && sidebarOverlay) {
+                const toggleSidebar = () => {
+                    sidebar.classList.toggle('active');
+                    sidebarOverlay.classList.toggle('active');
+                };
+                if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+                if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+                sidebarOverlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Global Search Logic
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                const container = searchInput.parentElement;
+                const menu = document.createElement('div');
+                menu.className = 'custom-dropdown-menu';
+                menu.style.width = '100.5%';
+                menu.style.left = '-1px';
+                menu.style.top = 'calc(100% + 10px)';
+                container.style.position = 'relative';
+                container.appendChild(menu);
+
+                let searchTimeout;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    const keyword = searchInput.value.trim();
+                    if (keyword.length < 2) {
+                        menu.style.display = 'none';
+                        return;
+                    }
+
+                    searchTimeout = setTimeout(async () => {
+                        try {
+                            const response = await fetch(`/questions/search?keyword=${encodeURIComponent(keyword)}`);
+                            if (response.ok) {
+                                const questions = await response.json();
+                                if (questions.length === 0) {
+                                    menu.innerHTML = '<div class="custom-dropdown-item"><span>No matching questions in bank</span></div>';
+                                } else {
+                                    menu.innerHTML = questions.map(q => `
+                                        <div class="custom-dropdown-item" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 20px; border-bottom: 1px solid var(--glass-border);">
+                                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--primary-color); line-height: 1.4;">${q.question}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 12px; align-items: center; margin-top: 4px;">
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-book" style="font-size: 0.7rem;"></i> ${q.subjectName}</span>
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-layer-group" style="font-size: 0.7rem;"></i> ${q.topicName}</span>
+                                                <span style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.65rem; text-transform: uppercase;">${q.difficultyType}</span>
+                                            </div>
+                                        </div>
+                                    `).join('');
+                                }
+                                menu.style.display = 'block';
+                            }
+                        } catch (err) { console.error('Search error', err); }
+                    }, 300);
+                });
+
+                document.addEventListener('mousedown', (e) => {
+                    if (!container.contains(e.target)) menu.style.display = 'none';
+                });
+            }
+
+            // Logout Confirmation Logic
+            const logoutModal = document.getElementById('logoutModal');
+            const logoutTriggers = document.querySelectorAll('.logout-trigger');
+            const confirmLogoutBtn = document.getElementById('confirmLogout');
+            const cancelLogoutBtn = document.getElementById('cancelLogout');
+
+            logoutTriggers.forEach(trigger => {
+                trigger.onclick = () => logoutModal.style.display = 'flex';
+            });
+
+            cancelLogoutBtn.onclick = () => logoutModal.style.display = 'none';
+            window.onclick = (e) => { if (e.target == logoutModal) logoutModal.style.display = 'none'; };
+
+            confirmLogoutBtn.onclick = function () {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                setTimeout(() => { window.location.href = "/logout"; }, 800);
+            };
+        });
+    </script>
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card" style="text-align: center;">
+            <div
+                style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 1.5rem;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Logging Out?</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Are you sure you want to end your
+                session? You will need to login again to access your QuestBank.</p>
+
+            <div class="logout-confirm-btns">
+                <button class="btn-confirm btn-no" id="cancelLogout">Not Now</button>
+                <button class="btn-confirm btn-yes" id="confirmLogout">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

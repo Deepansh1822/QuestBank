@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Toast Notification System -->
+    <script src="/js/toast.js"></script>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link active">
+                    <i class="fas fa-database"></i>
+                    <span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="/generator" class="submenu-link active">
+                            <i class="fas fa-plus" style="font-size: 0.8rem; margin-right: 8px;"></i> Add Question
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="/create-paper" class="submenu-link">
+                            <i class="fas fa-file-invoice" style="font-size: 0.8rem; margin-right: 8px;"></i> Create
+                            Paper
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+        </a>
+    </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <div class="top-search-bar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for Questions, Topics, etc...">
+            </div>
+        </div>
+        <div class="container">
+
+            <header>
+                <h1>QuestBank</h1>
+                <p class="subtitle">Intelligent Question Generator</p>
+            </header>
+
+            <div class="glass-card">
+                <!-- Progress Steps -->
+                <div class="progress-container">
+                    <div class="step-indicator active">1</div>
+                    <div class="step-indicator">2</div>
+                    <div class="step-indicator">3</div>
+                    <div class="step-indicator">4</div>
+                    <div class="step-indicator">5</div>
+                </div>
+
+                <form id="qgenForm" th:object="${formRequest}">
+
+                    <!-- Step 1: Context -->
+                    <div class="form-step active" data-step="1">
+                        <h2 style="margin-bottom:1.5rem; text-align:center;">Academic Credentials</h2>
+                        <div class="input-group">
+                            <label style="text-align:center;">Organization Logo</label>
+                            <div class="logo-upload-container">
+                                <div class="logo-preview-card" id="logoPreviewCard">
+                                    <i class="fas fa-image" id="placeholderIcon"></i>
+                                    <img id="logoPreview"
+                                        style="display:none; width:100%; height:100%; object-fit:cover; background: white;">
+                                    <div class="logo-overlay">
+                                        <i class="fas fa-camera"></i>
+                                        <span>Change Logo</span>
+                                    </div>
+                                    <input type="file" id="logoInput" accept="image/*" style="display:none;">
+                                </div>
+                                <p
+                                    style="font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem; text-align:center;">
+                                    Upload a logo for professional headers
+                                </p>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>University or Organization</label>
+                            <input type="text" placeholder="e.g. Rainbow School" th:field="*{organisation}"
+                                list="orgList" autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Course or Class</label>
+                            <input type="text" placeholder="e.g. 12th" th:field="*{className}" list="classList"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Subject</label>
+                            <input type="text" placeholder="e.g. Mathematics" th:field="*{subjectName}"
+                                list="subjectList" autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Chapter</label>
+                            <input type="text" placeholder="e.g. Integration" th:field="*{chapterName}"
+                                list="chapterList" autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Topic</label>
+                            <input type="text" placeholder="e.g. Definite Integration" th:field="*{topicName}"
+                                list="topicList" autocomplete="off" required>
+                        </div>
+
+
+
+                        <datalist id="orgList"></datalist>
+                        <datalist id="classList"></datalist>
+                        <datalist id="subjectList"></datalist>
+                        <datalist id="chapterList"></datalist>
+                        <datalist id="topicList"></datalist>
+
+                    </div>
+
+                    <!-- Step 2: Configuration -->
+                    <div class="form-step" data-step="2">
+                        <h2 style="margin-bottom:1.5rem; text-align:center;">Questions Information</h2>
+
+                        <div class="input-group">
+                            <div style="display:flex; justify-content:space-between;">
+                                <label>Number of Questions
+                                    <span class="fancy-tooltip"
+                                        data-tooltip="For Uploading PDF the number of questions will be automatically set based on questions extracted from the file.">
+                                        <i class="fas fa-info"></i>
+                                    </span>
+                                </label>
+                                <span id="qCountVal" style="color:var(--primary-color); font-weight:bold;">10</span>
+                            </div>
+                            <div class="range-container">
+                                <input type="range" id="qCount" min="1" max="50" value="10"
+                                    th:field="*{numberOfQuestions}">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <div style="display:flex; justify-content:space-between;">
+                                <label>Marks per Question</label>
+                                <span id="marksVal" style="color:var(--primary-color); font-weight:bold;">5</span>
+                            </div>
+                            <div class="range-container">
+                                <input type="range" id="marks" min="1" max="20" value="5" th:field="*{questionMarks}">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Difficulty Level</label>
+                            <!-- Hidden input for binding -->
+                            <input type="hidden" id="difficultyInput" th:field="*{difficultyType}">
+                            <div class="options-grid" id="difficultyOptions">
+                                <div class="option-card difficulty-option" data-value="EASY">
+                                    <i class="fas fa-seedling option-icon" style="color:#10b981;"></i>
+                                    <span>Easy</span>
+                                </div>
+                                <div class="option-card difficulty-option selected" data-value="MEDIUM">
+                                    <i class="fas fa-layer-group option-icon" style="color:#f59e0b;"></i>
+                                    <span>Medium</span>
+                                </div>
+                                <div class="option-card difficulty-option" data-value="HARD">
+                                    <i class="fas fa-fire option-icon" style="color:#ef4444;"></i>
+                                    <span>Hard</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Question Type</label>
+                            <!-- Hidden input for binding -->
+                            <input type="hidden" id="typeInput" th:field="*{questionType}">
+                            <div class="options-grid" id="typeOptions">
+                                <div class="option-card type-option selected" data-value="MCQ">
+                                    <i class="fas fa-list-ul option-icon"></i>
+                                    <span>MCQ</span>
+                                </div>
+                                <div class="option-card type-option" data-value="SHORT">
+                                    <i class="fas fa-align-left option-icon"></i>
+                                    <span>Short</span>
+                                </div>
+                                <div class="option-card type-option" data-value="LONG">
+                                    <i class="fas fa-paragraph option-icon"></i>
+                                    <span>Long</span>
+                                </div>
+                                <div class="option-card type-option" data-value="TRUE_FALSE">
+                                    <i class="fas fa-check-square option-icon"></i>
+                                    <span>True/False</span>
+                                </div>
+                                <div class="option-card type-option" data-value="FILL_IN_THE_BLANKS">
+                                    <i class="fas fa-ellipsis-h option-icon"></i>
+                                    <span>Fill Blanks</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Step 3: Generation Method -->
+                    <div class="form-step" data-step="3">
+                        <h2 style="margin-bottom:1.5rem; text-align:center;">Input Methods</h2>
+
+                        <!-- Hidden input for binding InputType -->
+                        <input type="hidden" id="sourceInput" th:field="*{inputType}">
+
+                        <div class="source-grid" id="sourceOptions">
+                            <div class="source-card active" data-method="manual" data-value="MANUAL">
+                                <i class="fas fa-keyboard source-icon"></i>
+                                <h3>Manual Entry</h3>
+                                <p class="subtitle" style="font-size:0.8rem; margin-top:0.5rem;">Type questions yourself
+                                </p>
+                            </div>
+                            <div class="source-card" data-method="upload" data-value="IMPORT_PDF">
+                                <i class="fas fa-file-pdf source-icon"></i>
+                                <h3>Upload PDF</h3>
+                                <p class="subtitle" style="font-size:0.8rem; margin-top:0.5rem;">Extract from document
+                                </p>
+                            </div>
+                            <div class="source-card" data-method="ai" data-value="AI_GENERATED">
+                                <i class="fas fa-robot source-icon"></i>
+                                <h3>AI Generate</h3>
+                                <p class="subtitle" style="font-size:0.8rem; margin-top:0.5rem;">Using Groq <i
+                                        class="fas fa-bolt fa-bolt-fancy"
+                                        style="color: #f59e0b; font-size: 0.75rem; margin-left: 2px; filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5));"></i>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Content Areas -->
+                        <div id="method-manual" class="method-content hidden" style="margin-top:2rem;"></div>
+
+                        <div id="method-upload" class="method-content hidden" style="margin-top:2rem;">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"
+                                    style="font-size:3rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+                                <p>Drag & Drop specific PDF here or click to browse</p>
+                                <input type="file" id="pdfFileInput" accept=".pdf" style="display:none;">
+                            </div>
+                            <p
+                                style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-top:1rem; border-left:3px solid var(--primary-color); padding-left:0.5rem; background:rgba(99, 102, 241, 0.05); padding-top:0.5rem; padding-bottom:0.5rem;">
+                                <i class="fas fa-info-circle"></i> Note: The question count will automatically update
+                                based
+                                on the number of questions detected in your PDF.
+                            </p>
+                        </div>
+
+                        <div id="method-ai" class="method-content hidden" style="margin-top:2rem; text-align:center;">
+                            <div
+                                style="background:rgba(99, 102, 241, 0.1); padding:2rem; border-radius:12px; border:1px solid var(--primary-color);">
+                                <i class="fas fa-robot"
+                                    style="font-size:3rem; color:var(--primary-color); margin-bottom:1rem;"></i>
+                                <p style="margin-bottom:1.5rem;">Ready to generate questions using AI based on your
+                                    configuration.</p>
+                                <button type="button" id="aiGenBtn" class="btn btn-primary"
+                                    style="padding:0.8rem 2rem;">
+                                    <i class="fas fa-sparkles"></i> Generate with AI
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review -->
+                    <div class="form-step" data-step="4">
+                        <h2 style="margin-bottom:1.5rem; text-align:center;">Review Your Questions</h2>
+                        <div id="review-container" class="glass-card" style="padding:2rem;">
+                            <div id="review-summary" style="margin-bottom:2rem;">
+                                <!-- JS fills this -->
+                            </div>
+                            <p class="subtitle" style="text-align:center;">Review your academic credentials and
+                                questions.
+                                You
+                                can go back to edit if needed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Export -->
+                    <div class="form-step" data-step="5">
+                        <h2 style="margin-bottom:1.5rem; text-align:center;">Ready to Save Questions...!!</h2>
+                        <div style="text-align:center; padding:3rem;">
+                            <div class="success-icon"
+                                style="font-size:4rem; color:var(--primary-color); margin-bottom:1.5rem;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3>All set!</h3>
+                            <p class="subtitle" style="margin-bottom:2.5rem;">Click the button below to generate your
+                                PDF
+                                and save your questions to the bank.</p>
+
+                            <div id="final-stats"
+                                style="margin-bottom:2rem; background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px;">
+                                <!-- Final stats like total marks will go here -->
+                            </div>
+
+                            <div style="display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
+                                <button type="button" id="saveToBankBtn" class="btn btn-secondary"
+                                    style="padding:1rem 2rem; font-size:1.1rem; min-width:200px;">
+                                    <i class="fas fa-save"></i> Save to Bank
+                                </button>
+                                <button type="button" id="downloadPdfBtn" class="btn btn-primary"
+                                    style="padding:1rem 2rem; font-size:1.1rem; min-width:200px;">
+                                    <i class="fas fa-file-pdf"></i> Download PDF
+                                </button>
+                            </div>
+                            <div style="margin-top:2rem;">
+                                <button type="button" id="homeBtn" class="btn"
+                                    style="background:transparent; border:1px solid var(--primary-color); color:var(--primary-color); padding:0.8rem 2.5rem; border-radius:30px; cursor:pointer; transition:all 0.3s ease;">
+                                    <i class="fas fa-arrow-left"></i> Return to Dashboard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Back</button>
+                <button type="button" class="btn btn-primary" id="nextBtn" style="margin-left:auto;">Next Step</button>
+                <button type="submit" class="btn btn-primary" id="finalSubmitBtn"
+                    style="margin-left:auto; display:none;">Download PDF <i class="fas fa-download"></i></button>
+            </div>
+
+            </form>
+
+            <footer class="main-footer">
+                <div>
+                    &copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/" target="_blank"
+                        style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh Shakya</a>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+
+        <!-- Logout Confirmation Modal -->
+        <div class="modal-overlay" id="logoutModal">
+            <div class="modal-card" style="text-align: center;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 1.5rem;"></i>
+                </div>
+                <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Logging Out?</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Are you sure you want to end
+                    your
+                    session? You will need to login again to access your QuestBank.</p>
+
+                <div class="logout-confirm-btns">
+                    <button class="btn-confirm btn-no" id="cancelLogout">Not Now</button>
+                    <button class="btn-confirm btn-yes" id="confirmLogout">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/script.js"></script>
+        <script>
+            // Sidebar Dropdown Toggle Logic
+            document.addEventListener('DOMContentLoaded', () => {
+                const toggle = document.querySelector('.dropdown-toggle');
+                if (toggle) {
+                    toggle.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const menuItem = this.closest('.menu-item');
+                        menuItem.classList.toggle('open');
+                    });
+                }
+
+                // Logout Confirmation Logic
+                const logoutModal = document.getElementById('logoutModal');
+                const logoutTriggers = document.querySelectorAll('.logout-trigger');
+                const confirmLogoutBtn = document.getElementById('confirmLogout');
+                const cancelLogoutBtn = document.getElementById('cancelLogout');
+
+                logoutTriggers.forEach(trigger => {
+                    trigger.onclick = () => logoutModal.style.display = 'flex';
+                });
+
+                cancelLogoutBtn.onclick = () => logoutModal.style.display = 'none';
+                window.onclick = (e) => { if (e.target == logoutModal) logoutModal.style.display = 'none'; };
+
+                confirmLogoutBtn.onclick = function () {
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    setTimeout(() => { window.location.href = "/logout"; }, 800);
+                };
+            });
+        </script>
+</body>
+
+</html>

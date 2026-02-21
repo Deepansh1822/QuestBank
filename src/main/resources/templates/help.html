@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Help Center</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .help-hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .help-search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .help-search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .help-search-input:focus {
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .help-search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .faq-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .faq-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .faq-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .faq-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link">
+                    <i class="fas fa-database" style="color: var(--primary-color);"></i><span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="/generator" class="submenu-link"><i class="fas fa-plus"></i> Add
+                            Question</a></li>
+                    <li class="submenu-item"><a href="/create-paper" class="submenu-link"><i
+                                class="fas fa-file-invoice"></i> Create Paper</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <header class="help-hero">
+                <h1>How can we help?</h1>
+                <p class="subtitle">Search our knowledge base or browse common topics below</p>
+                <div class="help-search-container" style="margin-top: 2rem;">
+                    <i class="fas fa-search help-search-icon"></i>
+                    <input type="text" id="helpSearchInput" class="help-search-input"
+                        placeholder="Search for answers (e.g., 'PDF', 'AI', 'Password')...">
+                </div>
+            </header>
+
+            <div id="noResults" style="display: none; text-align: center; padding: 2rem; color: var(--text-muted);">
+                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>No help topics found matching your search.</p>
+            </div>
+
+            <div class="faq-grid" id="faqGrid">
+                <!-- Getting Started -->
+                <div class="faq-card" data-category="basics">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-rocket"></i></div>
+                        <h3 class="faq-title">Getting Started</h3>
+                    </div>
+                    <p class="faq-desc">Learn the basics of QuestBank, how to set up your account, and manage your first
+                        question bank.</p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p><strong>To get started:</strong></p>
+                        <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                            <li>Complete your profile in the Settings page.</li>
+                            <li>Navigate to 'Add Question' to start building your repository.</li>
+                            <li>Use 'Create Paper' to generate your first test.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adding Questions -->
+                <div class="faq-card" data-category="questions">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-plus-circle"></i></div>
+                        <h3 class="faq-title">Adding Questions</h3>
+                    </div>
+                    <p class="faq-desc">Guide on adding questions manually, using AI generation, or importing from PDF
+                        documents.</p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Methods supported:</strong></p>
+                        <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                            <li><strong>Manual:</strong> Fill out the form with question text, options, and metadata.
+                            </li>
+                            <li><strong>AI Gen:</strong> Provide a topic name, and our AI will generate questions for
+                                you.</li>
+                            <li><strong>PDF Import:</strong> (Coming Soon) Upload existing question papers to extract
+                                questions.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Creating Papers -->
+                <div class="faq-card" data-category="papers">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-file-invoice"></i></div>
+                        <h3 class="faq-title">Creating Papers</h3>
+                    </div>
+                    <p class="faq-desc">Step-by-step tutorial on generating professional question papers from your bank.
+                    </p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p>Go to the <strong>Create Paper</strong> page:</p>
+                        <ol style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                            <li>Select the Subject, Class, and Difficulty mix.</li>
+                            <li>Defin total marks and sections.</li>
+                            <li>Click 'Generate' to download a professionally formatted PDF.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Account Management -->
+                <div class="faq-card" data-category="account">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-user-cog"></i></div>
+                        <h3 class="faq-title">Account Management</h3>
+                    </div>
+                    <p class="faq-desc">How to update your profile, change password, and manage organization settings.
+                    </p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p>Visit your <strong>Profile Page</strong> to:</p>
+                        <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                            <li>Upload a new profile picture.</li>
+                            <li>Update your organization name (will appear on papers).</li>
+                            <li>Change your password securely.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="faq-card" data-category="security">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="faq-title">Security & Privacy</h3>
+                    </div>
+                    <p class="faq-desc">Information about how we protect your data and ensure secure access.</p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p>We use industry-standard encryption for passwords and data. Your question bank is private to
+                            your user account and cannot be accessed by others.</p>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting -->
+                <div class="faq-card" data-category="support">
+                    <div class="faq-header">
+                        <div class="faq-icon"><i class="fas fa-tools"></i></div>
+                        <h3 class="faq-title">Troubleshooting</h3>
+                    </div>
+                    <p class="faq-desc">Common issues and how to resolve them quickly.</p>
+                    <div class="faq-details">
+                        <hr style="border-top: 1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Common Fixes:</strong></p>
+                        <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                            <li><strong>PDF Download Failed:</strong> Ensure you have enough questions in the bank
+                                matching your criteria.</li>
+                            <li><strong>Login Issues:</strong> Use the 'Forgot Password' link or contact support.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem; text-align: center; padding: 3rem; background: #f8fafc; border-radius: 16px;">
+                <h3>Still need help?</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Our support team is just a click away.</p>
+                <a href="/contact" class="btn btn-primary"
+                    style="text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px; background: var(--primary-color); color: white;">Contact
+                    Support</a>
+            </div>
+
+            <footer class="main-footer" style="margin-top: 4rem;">
+                <div>&copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/"
+                        target="_blank" style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh
+                        Shakya</a></div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+
+    <style>
+        .faq-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .faq-details {
+            display: none;
+            /* Hidden by default */
+            margin-top: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .faq-card.expanded .faq-details {
+            display: block;
+        }
+
+        .faq-card.expanded {
+            border-color: var(--primary-color);
+            background: #fdfeff;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Logic
+            const toggle = document.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.closest('.menu-item').classList.toggle('open');
+                });
+            }
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            };
+            if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+            if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // FAQ Search Logic
+            const searchInput = document.getElementById('helpSearchInput');
+            const faqGrid = document.getElementById('faqGrid');
+            const cards = document.querySelectorAll('.faq-card');
+            const noResults = document.getElementById('noResults');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function (e) {
+                    const query = e.target.value.toLowerCase().trim();
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const title = card.querySelector('.faq-title').textContent.toLowerCase();
+                        const desc = card.querySelector('.faq-desc').textContent.toLowerCase();
+                        const details = card.querySelector('.faq-details').textContent.toLowerCase();
+
+                        if (title.includes(query) || desc.includes(query) || details.includes(query)) {
+                            card.style.display = 'flex';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    if (visibleCount === 0) {
+                        noResults.style.display = 'block';
+                        faqGrid.style.display = 'none';
+                    } else {
+                        noResults.style.display = 'none';
+                        faqGrid.style.display = 'grid';
+                    }
+                });
+            }
+
+            // Expandable Cards Logic
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    this.classList.toggle('expanded');
+                });
+            });
+
+            // Dynamic Placeholder Logic
+            const updatePlaceholder = () => {
+                if (searchInput) {
+                    if (window.innerWidth <= 768) {
+                        searchInput.placeholder = "Search help topics...";
+                    } else {
+                        searchInput.placeholder = "Search for answers (e.g., 'PDF', 'AI', 'Password')...";
+                    }
+                }
+            };
+
+            // Initial call
+            updatePlaceholder();
+
+            // Update on resize
+            window.addEventListener('resize', updatePlaceholder);
+        });
+    </script>
+</body>
+
+</html>

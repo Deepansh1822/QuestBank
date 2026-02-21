@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Dashboard</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/toast.js"></script>
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .dash-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .dash-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .dash-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        .org-spotlight {
+            margin-top: 6rem;
+            padding: 4rem 2rem;
+            background: var(--glass-bg);
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .org-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 0 1.2rem;
+            vertical-align: top;
+            width: 180px;
+        }
+
+        .org-tag {
+            background: var(--glass-bg);
+            padding: 0;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            width: 180px;
+            height: 120px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .org-tag:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.12);
+        }
+
+        .org-logo-box {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .org-tag:hover .org-logo-box {
+            background: #ffffff;
+        }
+
+        .org-logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .org-tag:hover .org-logo-box img {
+            transform: scale(1.1);
+        }
+
+        .org-logo-box i {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+        }
+
+        .org-name-label {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            transition: color 0.3s ease;
+        }
+
+        .org-item:hover .org-name-label {
+            color: var(--primary-color);
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 1rem 0;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 40s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link active">
+                    <i class="fas fa-database"></i>
+                    <span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="/generator" class="submenu-link">
+                            <i class="fas fa-plus" style="font-size: 0.8rem; margin-right: 8px;"></i> Add Question
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="/create-paper" class="submenu-link">
+                            <i class="fas fa-file-invoice" style="font-size: 0.8rem; margin-right: 8px;"></i> Create
+                            Paper
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+        </a>
+    </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <div class="top-search-bar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for Questions, Topics, etc...">
+            </div>
+        </div>
+        <div class="container">
+
+
+            <header>
+                <h1>QuestBank Dashboard</h1>
+                <p class="subtitle">Welcome back to your Intelligent QuestBank Generator</p>
+            </header>
+
+            <div class="dashboard-grid">
+                <a href="/generator" class="dash-card">
+                    <i class="fas fa-plus-circle dash-icon"></i>
+                    <h3>Add Questions</h3>
+                    <p class="subtitle" style="font-size: 0.9rem;">Add questions to bank via Manual, AI, or PDF Import
+                    </p>
+                </a>
+
+                <a href="/create-paper" class="dash-card">
+                    <i class="fas fa-file-invoice dash-icon"></i>
+                    <h3>Create Question Paper</h3>
+                    <p class="subtitle" style="font-size: 0.9rem;">Generate full papers from your existing QuestBank
+                    </p>
+                </a>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" th:text="${totalQuestions}">0</span>
+                    <span class="stat-label">Total Questions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" th:text="${organisationCount}">0</span>
+                    <span class="stat-label">Organisations</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" th:text="${subjectCount}">0</span>
+                    <span class="stat-label">Subjects</span>
+                </div>
+            </div>
+
+            <div class="org-spotlight" th:if="${not #lists.isEmpty(organisations)}">
+                <h3
+                    style="text-align: center; color: var(--text-main); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 2rem; opacity: 0.8;">
+                    Trusted By Top Organisations
+                </h3>
+                <div class="marquee-container">
+                    <div class="marquee-content" style="padding: 1rem 0;">
+                        <!-- First Set -->
+                        <div th:each="org : ${organisations}" class="org-item">
+                            <div class="org-tag">
+                                <div class="org-logo-box">
+                                    <img th:src="@{/api/organisations/logo/{name}(name=${org})}"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <i class="fas fa-university" style="display:none; color: var(--primary-color);"></i>
+                                </div>
+                            </div>
+                            <div class="org-name-label" th:text="${org}">Organisation Name</div>
+                        </div>
+                        <!-- Repeat Set for loop -->
+                        <div th:each="org : ${organisations}" class="org-item">
+                            <div class="org-tag">
+                                <div class="org-logo-box">
+                                    <img th:src="@{/api/organisations/logo/{name}(name=${org})}"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <i class="fas fa-university" style="display:none; color: var(--primary-color);"></i>
+                                </div>
+                            </div>
+                            <div class="org-name-label" th:text="${org}">Organisation Name</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <div>
+                    &copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/" target="_blank"
+                        style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh Shakya</a>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+
+        <!-- Logout Confirmation Modal -->
+        <div class="modal-overlay" id="logoutModal">
+            <div class="modal-card" style="text-align: center;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 1.5rem;"></i>
+                </div>
+                <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Logging Out?</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Are you sure you want to end
+                    your
+                    session? You will need to login again to access your QuestBank.</p>
+
+                <div class="logout-confirm-btns">
+                    <button class="btn-confirm btn-no" id="cancelLogout">Not Now</button>
+                    <button class="btn-confirm btn-yes" id="confirmLogout">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function animateCounter(el) {
+                const target = parseInt(el.innerText);
+                if (isNaN(target) || target === 0) return;
+
+                let count = 0;
+                const duration = 2000; // 2 seconds animation
+                const startTime = performance.now();
+
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    // Ease out cubic
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const currentCount = Math.floor(easeOut * target);
+
+                    el.innerText = currentCount;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        el.innerText = target;
+                    }
+                }
+                requestAnimationFrame(update);
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Wait a small bit for initial render
+                setTimeout(() => {
+                    document.querySelectorAll('.stat-value').forEach(animateCounter);
+                }, 300);
+
+                // Sidebar Dropdown Toggle Logic
+                const toggle = document.querySelector('.dropdown-toggle');
+                if (toggle) {
+                    toggle.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const menuItem = this.closest('.menu-item');
+                        menuItem.classList.toggle('open');
+                    });
+                }
+
+                // Mobile Sidebar Toggle
+                const menuToggle = document.getElementById('menuToggle');
+                const closeSidebar = document.getElementById('closeSidebar');
+                const sidebar = document.querySelector('.sidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+                if (sidebar && sidebarOverlay) {
+                    const toggleSidebar = () => {
+                        sidebar.classList.toggle('active');
+                        sidebarOverlay.classList.toggle('active');
+                    };
+
+                    if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+                    if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+                    sidebarOverlay.addEventListener('click', toggleSidebar);
+                }
+
+                // Global Search Logic
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    const container = searchInput.parentElement;
+                    const menu = document.createElement('div');
+                    menu.className = 'custom-dropdown-menu';
+                    menu.style.width = '100.5%';
+                    menu.style.left = '-1px';
+                    menu.style.top = 'calc(100% + 10px)';
+                    container.style.position = 'relative';
+                    container.appendChild(menu);
+
+                    let searchTimeout;
+                    searchInput.addEventListener('input', () => {
+                        clearTimeout(searchTimeout);
+                        const keyword = searchInput.value.trim();
+                        if (keyword.length < 2) {
+                            menu.style.display = 'none';
+                            return;
+                        }
+
+                        searchTimeout = setTimeout(async () => {
+                            try {
+                                const response = await fetch(`/questions/search?keyword=${encodeURIComponent(keyword)}`);
+                                if (response.ok) {
+                                    const questions = await response.json();
+                                    if (questions.length === 0) {
+                                        menu.innerHTML = '<div class="custom-dropdown-item"><span>No matching questions in bank</span></div>';
+                                    } else {
+                                        menu.innerHTML = questions.map(q => `
+                                        <div class="custom-dropdown-item" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 20px; border-bottom: 1px solid var(--glass-border);">
+                                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--primary-color); line-height: 1.4;">${q.question}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 12px; align-items: center; margin-top: 4px;">
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-book" style="font-size: 0.7rem;"></i> ${q.subjectName}</span>
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-layer-group" style="font-size: 0.7rem;"></i> ${q.topicName}</span>
+                                                <span style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.65rem; text-transform: uppercase;">${q.difficultyType}</span>
+                                            </div>
+                                        </div>
+                                    `).join('');
+                                    }
+                                    menu.style.display = 'block';
+                                }
+                            } catch (err) { console.error('Search error', err); }
+                        }, 300);
+                    });
+
+                    document.addEventListener('mousedown', (e) => {
+                        if (!container.contains(e.target)) menu.style.display = 'none';
+                    });
+                }
+
+                // Logout Confirmation Logic
+                const logoutModal = document.getElementById('logoutModal');
+                const logoutTriggers = document.querySelectorAll('.logout-trigger');
+                const confirmLogout = document.getElementById('confirmLogout');
+                const cancelLogout = document.getElementById('cancelLogout');
+
+                logoutTriggers.forEach(trigger => {
+                    trigger.onclick = () => logoutModal.style.display = 'flex';
+                });
+
+                cancelLogout.onclick = () => logoutModal.style.display = 'none';
+                window.onclick = (e) => { if (e.target == logoutModal) logoutModal.style.display = 'none'; };
+
+                confirmLogout.onclick = function () {
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    setTimeout(() => { window.location.href = "/logout"; }, 800);
+                };
+            });
+        </script>
+</body>
+
+</html>

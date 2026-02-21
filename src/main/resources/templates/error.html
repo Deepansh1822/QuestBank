@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+</head>
+
+<body
+    style="background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif;">
+    <div style="text-align: center; max-width: 800px; padding: 2rem;">
+        <h1 style="color: #ef4444;">Something went wrong</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 1rem;" th:text="${errorMessage != null ? errorMessage : message}">
+            Unknown error</p>
+
+        <div th:if="${trace}"
+            style="text-align: left; background: #1e293b; padding: 1rem; border-radius: 8px; overflow: auto; max-height: 300px; font-family: monospace; font-size: 0.85rem; color: #cbd5e1; margin-top: 1rem;">
+            <pre th:text="${trace}"></pre>
+        </div>
+
+        <a href="/"
+            style="color: #3b82f6; text-decoration: none; margin-top: 2rem; display: inline-block; border: 1px solid #3b82f6; padding: 0.5rem 1.5rem; border-radius: 6px;">Go
+            Home</a>
+        <a href="/login?logout"
+            style="color: #ef4444; text-decoration: none; margin-top: 1rem; display: inline-block; margin-left: 1rem; border: 1px solid #ef4444; padding: 0.5rem 1.5rem; border-radius: 6px;">Logout</a>
+    </div>
+</body>
+
+</html>

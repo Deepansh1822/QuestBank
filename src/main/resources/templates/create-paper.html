@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Create Paper</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/toast.js"></script>
+    <style>
+        .form-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+        }
+
+        .section-config {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .section-config:hover {
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .section-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .btn-add-section {
+            background: var(--glass-bg);
+            border: 2px dashed var(--primary-color);
+            color: var(--primary-color);
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .topic-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 40px;
+            gap: 1rem;
+            align-items: end;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .btn-add-topic {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .btn-add-topic:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-add-section:hover {
+            background: rgba(79, 70, 229, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .remove-section {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .remove-section:hover {
+            color: #ef4444;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .topic-row {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+                padding: 1.2rem;
+            }
+
+            .topic-row .input-group {
+                width: 100%;
+            }
+
+            .remove-topic {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                visibility: visible !important;
+                padding: 5px;
+            }
+
+            .topics-container .topic-row:first-child .remove-topic {
+                display: none !important;
+            }
+
+            .section-config {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Review Draft Portal Styling */
+        .review-section-header {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .review-section-header .section-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .review-section-header .question-count {
+            font-size: 0.8rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .review-q-card {
+            display: flex;
+            gap: 1rem;
+            background: #fff;
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid #eee;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .review-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .review-q-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+
+            .review-q-card button {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link active">
+                    <i class="fas fa-database"></i>
+                    <span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="/generator" class="submenu-link">
+                            <i class="fas fa-plus" style="font-size: 0.8rem; margin-right: 8px;"></i> Add Question
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="/create-paper" class="submenu-link active">
+                            <i class="fas fa-file-invoice" style="font-size: 0.8rem; margin-right: 8px;"></i> Create
+                            Paper
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+        </a>
+    </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <div class="top-search-bar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for Questions, Topics, etc...">
+            </div>
+        </div>
+        <div class="container">
+            <header>
+                <h1>Generate Paper</h1>
+                <p class="subtitle">Extract and randomize questions from your bank</p>
+            </header>
+
+            <div class="glass-card form-container">
+                <form id="createPaperForm">
+                    <!-- Global Academic Context -->
+                    <div class="input-grid">
+                        <div class="input-group full-width">
+                            <label style="text-align:center">Organization Logo</label>
+                            <div class="logo-upload-container">
+                                <div class="logo-preview-card" id="logoPreviewCard">
+                                    <i class="fas fa-image" id="placeholderIcon"></i>
+                                    <img id="logoPreview"
+                                        style="display:none; width:100%; height:100%; object-fit:cover; background: white;">
+                                    <div class="logo-overlay">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Logo Preview</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                University or Organisation
+                                <span class="fancy-tooltip"
+                                    data-tooltip="You can add other organisation name as well, it is not used for filtering questions on the basis of organisation names from the QuestBank">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                            </label>
+                            <input type="text" id="organisation" list="orgList" placeholder="e.g. Rainbow School"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Course or Class</label>
+                            <input type="text" id="className" list="classList" placeholder="e.g. 12th"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Subject</label>
+                            <input type="text" id="subjectName" list="subjectList" placeholder="e.g. Mathematics"
+                                autocomplete="off" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Exam Type</label>
+                            <select id="examType" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Half Yearly">Half Yearly</option>
+                                <option value="Mock Test">Mock Test</option>
+                                <option value="Final Exams">Final Exams</option>
+                                <option value="Mid Semester">Mid Semester</option>
+                                <option value="End Semester">End Semester</option>
+                                <option value="Class Test">Class Test</option>
+                                <option value="Unit Test">Unit Test</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Total Exam Time</label>
+                            <input type="text" id="totalTime" placeholder="e.g. 3 Hours, 90 Mins..." autocomplete="off"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label>Set Number</label>
+                            <input type="text" id="setNumber" placeholder="e.g. 1, 2, A, B..." autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Sections Container -->
+                    <div id="sectionsList">
+                        <!-- Section A (Default) -->
+                        <div class="section-config" data-section-id="0">
+                            <div class="section-badge">SECTION A</div>
+                            <i class="fas fa-times remove-section" style="display:none;"></i>
+
+                            <!-- Section Settings -->
+                            <div class="input-grid"
+                                style="margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem;">
+                                <div class="input-group full-width">
+                                    <label>Section Difficulty Level</label>
+                                    <div class="options-grid difficulty-options">
+                                        <div class="option-card difficulty-option" data-value="EASY">
+                                            <i class="fas fa-seedling option-icon" style="color:#10b981;"></i>
+                                            <span>Easy</span>
+                                        </div>
+                                        <div class="option-card difficulty-option selected" data-value="MEDIUM">
+                                            <i class="fas fa-layer-group option-icon" style="color:#f59e0b;"></i>
+                                            <span>Medium</span>
+                                        </div>
+                                        <div class="option-card difficulty-option" data-value="HARD">
+                                            <i class="fas fa-fire option-icon" style="color:#ef4444;"></i>
+                                            <span>Hard</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Section Question Type</label>
+                                    <div class="options-grid type-options">
+                                        <div class="option-card type-option selected" data-value="MCQ">
+                                            <i class="fas fa-list-ul option-icon"></i>
+                                            <span>MCQ</span>
+                                        </div>
+                                        <div class="option-card type-option" data-value="SHORT">
+                                            <i class="fas fa-align-left option-icon"></i>
+                                            <span>Short</span>
+                                        </div>
+                                        <div class="option-card type-option" data-value="LONG">
+                                            <i class="fas fa-paragraph option-icon"></i>
+                                            <span>Long</span>
+                                        </div>
+                                        <div class="option-card type-option" data-value="TRUE_FALSE">
+                                            <i class="fas fa-check-square option-icon"></i>
+                                            <span>True/False</span>
+                                        </div>
+                                        <div class="option-card type-option" data-value="FILL_IN_THE_BLANKS">
+                                            <i class="fas fa-ellipsis-h option-icon"></i>
+                                            <span>Fill Blanks</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Marks per Question in this Section</label>
+                                    <div class="range-container">
+                                        <input type="range" class="marks-slider" min="1" max="20" value="2">
+                                        <span class="range-val" style="color:var(--primary-color);">2</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topics in this section -->
+                            <label style="font-weight: 600; margin-bottom: 1rem; display: block;">Chapters & Topics
+                                Selection</label>
+                            <div class="topics-container">
+                                <div class="topic-row">
+                                    <div class="input-group" style="margin-bottom: 0;">
+                                        <label style="font-size: 0.75rem;">Chapter</label>
+                                        <input type="text" class="chapter-input" list="chapterList"
+                                            placeholder="e.g. Integration" autocomplete="off" required>
+                                    </div>
+                                    <div class="input-group" style="margin-bottom: 0;">
+                                        <label style="font-size: 0.75rem;">Topic</label>
+                                        <input type="text" class="topic-input" list="topicList"
+                                            placeholder="e.g. Definite Integration" autocomplete="off" required>
+                                    </div>
+                                    <div class="input-group" style="margin-bottom: 0;">
+                                        <label style="font-size: 0.75rem;">Q Count</label>
+                                        <input type="number" class="count-input" min="1" max="50" value="5">
+                                    </div>
+                                    <div style="padding-bottom: 8px;">
+                                        <i class="fas fa-trash remove-topic"
+                                            style="color: var(--text-muted); cursor: pointer; visibility: hidden;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-add-topic"><i class="fas fa-plus"></i> Add Another
+                                Topic</button>
+                        </div>
+                    </div>
+
+                    <datalist id="orgList"></datalist>
+                    <datalist id="classList"></datalist>
+                    <datalist id="subjectList"></datalist>
+                    <datalist id="chapterList"></datalist>
+                    <datalist id="topicList"></datalist>
+
+                    <button type="button" class="btn-add-section" id="btnAddSection">
+                        <i class="fas fa-plus"></i> Add New Section
+                    </button>
+
+
+
+                    <div
+                        style="text-align: center; margin-top: 3rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <button type="button" id="reviewQuestionsBtn" class="btn btn-secondary"
+                            style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 50px;  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                            <i class="fas fa-search-plus"></i> Review & Preview PDF
+                        </button>
+                        <button type="button" id="generateBankPdfBtn" class="btn btn-primary"
+                            style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 50px;">
+                            <i class="fas fa-bolt"></i> Direct Generate PDF
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Review Portal (HIDDEN BY DEFAULT) -->
+            <div id="reviewPortal" class="glass-card"
+                style="display:none; margin-top: 3rem; border: 2px solid rgba(79, 70, 229, 0.3); background: rgba(255,255,255,0.7);">
+                <h2 style="text-align:center; margin-bottom: 2rem; color: var(--primary-color);">Draft Review Portal
+                </h2>
+                <div id="reviewContent">
+                    <!-- Questions will be injected here as cards -->
+                </div>
+
+                <div
+                    style="margin-top: 3rem; text-align: center; border-top: 1px solid var(--glass-border); padding-top: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--secondary-color);">Live PDF Preview</h3>
+                    <div id="pdfPreviewContainer"
+                        style="height: 600px; width: 100%; background: #ffffff; border-radius: 16px; overflow: hidden; border: 2px dashed var(--glass-border); position: relative;">
+                        <!-- PDF Embed will go here -->
+                        <div id="pdfPlaceholder"
+                            style="display:flex; align-items:center; justify-content:center; height:100%; color: var(--text-muted); flex-direction: column;">
+                            <i class="fas fa-file-pdf" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                            <p>Click "Update PDF Review" to generate layout</p>
+                        </div>
+                        <embed id="pdfEmbed" src="" type="application/pdf" width="100%" height="100%"
+                            style="display:none; border:none;">
+                    </div>
+
+                    <div
+                        style="margin-top: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <button type="button" id="updatePdfPreviewBtn" class="btn btn-primary"
+                            style="border-radius: 30px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 0.8rem 2rem;">
+                            <i class="fas fa-sync-alt"></i> Update PDF Review
+                        </button>
+                        <button type="button" id="downloadFinalPdfBtn" class="btn btn-success"
+                            style="border-radius: 30px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 0.8rem 2rem;">
+                            <i class="fas fa-cloud-download-alt"></i> Download Final PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="/" class="btn btn-secondary"
+                    style="text-decoration: none; display: inline-block; border-radius: 30px;">
+                    <i class="fas fa-arrow-left"></i> Return to Dashboard
+                </a>
+            </div>
+            <footer class="main-footer">
+                <div>
+                    &copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/" target="_blank"
+                        style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh Shakya</a>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sectionsList = document.getElementById('sectionsList');
+            const btnAddSection = document.getElementById('btnAddSection');
+            const generateBtn = document.getElementById('generateBankPdfBtn');
+            const logoPreview = document.getElementById('logoPreview');
+            const placeholderIcon = document.getElementById('placeholderIcon');
+            const orgInput = document.getElementById('organisation');
+
+            let sectionCount = 1;
+
+            // === Premium Custom Dropdown Logic ===
+            const dropdownData = {};
+            async function initAutocomplete() {
+                const endpoints = {
+                    'organisation': '/api/data/organisations',
+                    'classList': '/api/data/classes',
+                    'subjectList': '/api/data/subjects',
+                    'chapterList': '/api/data/chapters',
+                    'topicList': '/api/data/topics'
+                };
+                await Promise.all(Object.entries(endpoints).map(async ([listId, url]) => {
+                    try {
+                        const resp = await fetch(url);
+                        if (resp.ok) dropdownData[listId] = await resp.json();
+                    } catch (err) { console.error('Error fetching ' + listId, err); }
+                }));
+            }
+            initAutocomplete();
+
+            const activeDropdown = { input: null, menu: null };
+            function hideCustomMenu() {
+                if (activeDropdown.menu) { activeDropdown.menu.remove(); activeDropdown.menu = null; activeDropdown.input = null; }
+            }
+
+            function updateMenuList(input, filter, type) {
+                let menu = activeDropdown.menu;
+                if (!menu) {
+                    menu = document.createElement('div');
+                    menu.className = 'custom-dropdown-menu';
+                    input.parentElement.classList.add('autocomplete-container');
+                    input.parentElement.appendChild(menu);
+                    activeDropdown.menu = menu;
+                    activeDropdown.input = input;
+                }
+
+                const data = dropdownData[type] || [];
+                const filtered = data.filter(item => item.toLowerCase().includes(filter.toLowerCase()));
+                if (filtered.length === 0) { menu.style.display = 'none'; return; }
+
+                menu.innerHTML = filtered.map(item => `<div class="custom-dropdown-item" data-value="${item}"><i class="fas fa-database"></i><span>${item}</span></div>`).join('');
+                menu.style.display = 'block';
+                menu.querySelectorAll('.custom-dropdown-item').forEach(item => {
+                    item.addEventListener('mousedown', () => { input.value = item.dataset.value; input.dispatchEvent(new Event('input')); hideCustomMenu(); });
+                });
+            }
+
+            document.addEventListener('focusin', (e) => {
+                const el = e.target;
+                if (el.tagName !== 'INPUT') return;
+                let type = null;
+                if (el.id === 'organisation') type = 'organisation';
+                else if (el.id === 'className') type = 'classList';
+                else if (el.id === 'subjectName') type = 'subjectList';
+                else if (el.classList.contains('chapter-input')) type = 'chapterList';
+                else if (el.classList.contains('topic-input')) type = 'topicList';
+                if (type) { el.setAttribute('autocomplete', 'off'); updateMenuList(el, el.value, type); }
+            });
+
+            document.addEventListener('input', (e) => {
+                const el = e.target;
+                if (activeDropdown.input === el) {
+                    let type = (el.id === 'organisation') ? 'organisation' : (el.id === 'className') ? 'classList' : (el.id === 'subjectName') ? 'subjectList' : (el.classList.contains('chapter-input')) ? 'chapterList' : (el.classList.contains('topic-input')) ? 'topicList' : null;
+                    if (type) updateMenuList(el, el.value, type);
+                }
+            });
+
+            document.addEventListener('focusout', () => setTimeout(hideCustomMenu, 200));
+
+            // Slider Logic
+            function initSlider(slider) {
+                const display = slider.nextElementSibling;
+                const update = () => {
+                    display.textContent = slider.value;
+                    const pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+                    slider.style.backgroundSize = `${pct}% 100%`;
+                };
+                slider.addEventListener('input', update);
+                update();
+            }
+
+            // Topic Management
+            function attachTopicLogic(section) {
+                const topicsContainer = section.querySelector('.topics-container');
+                const btnAddTopic = section.querySelector('.btn-add-topic');
+
+                btnAddTopic.addEventListener('click', () => {
+                    const row = document.createElement('div');
+                    row.className = 'topic-row';
+                    row.innerHTML = `
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem;">Chapter</label>
+                            <input type="text" class="chapter-input" list="chapterList" placeholder="e.g. Integration" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem;">Topic</label>
+                            <input type="text" class="topic-input" list="topicList" placeholder="e.g. Definite Integration" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem;">Q Count</label>
+                            <input type="number" class="count-input" min="1" max="50" value="5">
+                        </div>
+                        <div style="padding-bottom: 8px;">
+                            <i class="fas fa-trash remove-topic" style="color: var(--text-muted); cursor: pointer;"></i>
+                        </div>
+                    `;
+                    topicsContainer.appendChild(row);
+                    row.querySelector('.remove-topic').addEventListener('click', () => row.remove());
+                });
+            }
+
+            // Initial section logic
+            const initialSection = sectionsList.querySelector('.section-config');
+            initSlider(initialSection.querySelector('.marks-slider'));
+            attachTopicLogic(initialSection);
+
+            // Add Section logic
+            btnAddSection.addEventListener('click', () => {
+                const char = String.fromCharCode(65 + sectionCount);
+                const div = document.createElement('div');
+                div.className = 'section-config';
+                div.innerHTML = `
+                    <div class="section-badge">SECTION ${char}</div>
+                    <i class="fas fa-times remove-section"></i>
+                    
+                    <div class="input-grid" style="margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem;">
+                        <div class="input-group full-width">
+                            <label>Section Difficulty</label>
+                            <div class="options-grid difficulty-options">
+                                <div class="option-card difficulty-option" data-value="EASY">
+                                    <i class="fas fa-seedling option-icon" style="color:#10b981;"></i>
+                                    <span>Easy</span>
+                                </div>
+                                <div class="option-card difficulty-option selected" data-value="MEDIUM">
+                                    <i class="fas fa-layer-group option-icon" style="color:#f59e0b;"></i>
+                                    <span>Medium</span>
+                                </div>
+                                <div class="option-card difficulty-option" data-value="HARD">
+                                    <i class="fas fa-fire option-icon" style="color:#ef4444;"></i>
+                                    <span>Hard</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Section Question Type</label>
+                            <div class="options-grid type-options">
+                                <div class="option-card type-option selected" data-value="MCQ">
+                                    <i class="fas fa-list-ul option-icon"></i>
+                                    <span>MCQ</span>
+                                </div>
+                                <div class="option-card type-option" data-value="SHORT">
+                                    <i class="fas fa-align-left option-icon"></i>
+                                    <span>Short</span>
+                                </div>
+                                <div class="option-card type-option" data-value="LONG">
+                                    <i class="fas fa-paragraph option-icon"></i>
+                                    <span>Long</span>
+                                </div>
+                                <div class="option-card type-option" data-value="TRUE_FALSE">
+                                    <i class="fas fa-check-square option-icon"></i>
+                                    <span>True/False</span>
+                                </div>
+                                <div class="option-card type-option" data-value="FILL_IN_THE_BLANKS">
+                                    <i class="fas fa-ellipsis-h option-icon"></i>
+                                    <span>Fill Blanks</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Marks per Question in this Section</label>
+                            <div class="range-container">
+                                <input type="range" class="marks-slider" min="1" max="20" value="2">
+                                <span class="range-val" style="color:var(--primary-color);">2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label style="font-weight: 600; margin-bottom: 1rem; display: block;">Chapters & Topics Selection</label>
+                    <div class="topics-container">
+                        <div class="topic-row">
+                            <div class="input-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem;">Chapter</label>
+                                <input type="text" class="chapter-input" list="chapterList" placeholder="e.g. Integration" required>
+                            </div>
+                            <div class="input-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem;">Topic</label>
+                                <input type="text" class="topic-input" list="topicList" placeholder="e.g. Definite Integration" required>
+                            </div>
+                            <div class="input-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem;">Q Count</label>
+                                <input type="number" class="count-input" min="1" max="50" value="5">
+                            </div>
+                            <div style="padding-bottom: 8px;">
+                                <i class="fas fa-trash remove-topic" style="color: var(--text-muted); cursor: pointer; visibility: hidden;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-topic"><i class="fas fa-plus"></i> Add Another Topic</button>
+                `;
+                sectionsList.appendChild(div);
+                initSlider(div.querySelector('.marks-slider'));
+                attachTopicLogic(div);
+
+                div.querySelector('.remove-section').addEventListener('click', () => {
+                    div.remove();
+                    updateSectionBadges();
+                });
+                sectionCount++;
+            });
+
+            // Handle Card Selections via Event Delegation
+            document.addEventListener('click', (e) => {
+                const card = e.target.closest('.option-card');
+                if (!card) return;
+
+                const parent = card.parentElement;
+                parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            });
+
+            function updateSectionBadges() {
+                const sections = sectionsList.querySelectorAll('.section-config');
+                sections.forEach((sec, idx) => {
+                    sec.querySelector('.section-badge').textContent = `SECTION ${String.fromCharCode(65 + idx)}`;
+                });
+                sectionCount = sections.length;
+            }
+
+            // Global Logo logic
+            let orgTimeout;
+            orgInput.addEventListener('input', () => {
+                clearTimeout(orgTimeout);
+                orgTimeout = setTimeout(async () => {
+                    const name = orgInput.value.trim();
+                    if (name) {
+                        try {
+                            const resp = await fetch(`/api/organisations/logo/${name}`);
+                            if (resp.ok) {
+                                const blob = await resp.blob();
+                                logoPreview.src = URL.createObjectURL(blob);
+                                logoPreview.style.display = 'block';
+                                placeholderIcon.style.display = 'none';
+                                return;
+                            }
+                        } catch (e) { }
+                    }
+                    logoPreview.style.display = 'none';
+                    placeholderIcon.style.display = 'block';
+                }, 800);
+            });
+
+            // === State & Review Hub ===
+            let currentDraft = null;
+
+            function getPaperPayload() {
+                const org = document.getElementById('organisation').value;
+                const cls = document.getElementById('className').value;
+                const sub = document.getElementById('subjectName').value;
+                const examType = document.getElementById('examType').value;
+                const totalTime = document.getElementById('totalTime').value;
+                const setNumber = document.getElementById('setNumber').value;
+
+                if (!org || !cls || !sub || !examType) {
+                    showToast('Please fill all required fields (Org, Class, Subject, Exam Type)', 'info');
+                    return null;
+                }
+
+                const payloadSections = [];
+                const sections = sectionsList.querySelectorAll('.section-config');
+
+                for (const sec of sections) {
+                    const sectionName = sec.querySelector('.section-badge').textContent;
+                    const diff = sec.querySelector('.difficulty-option.selected').dataset.value;
+                    const type = sec.querySelector('.type-option.selected').dataset.value;
+                    const marks = parseInt(sec.querySelector('.marks-slider').value);
+
+                    const topicCriteria = [];
+                    const topicRows = sec.querySelectorAll('.topic-row');
+                    for (const row of topicRows) {
+                        const chapter = row.querySelector('.chapter-input').value;
+                        const topic = row.querySelector('.topic-input').value;
+                        const count = parseInt(row.querySelector('.count-input').value);
+
+                        if (chapter && topic) {
+                            topicCriteria.push({
+                                chapterName: chapter,
+                                topicName: topic,
+                                numberOfQuestions: count
+                            });
+                        }
+                    }
+
+                    if (topicCriteria.length === 0) {
+                        showToast(`Please add at least one topic to ${sectionName}`, 'warning');
+                        return null;
+                    }
+
+                    payloadSections.push({
+                        sectionName: sectionName,
+                        questionType: type,
+                        difficultyType: diff,
+                        marksPerQuestion: marks,
+                        topicCriteria: topicCriteria
+                    });
+                }
+
+                return {
+                    organisation: org,
+                    className: cls,
+                    subjectName: sub,
+                    examType: examType,
+                    totalTime: totalTime,
+                    setNumber: setNumber,
+                    sections: payloadSections
+                };
+            }
+
+            function renderReviewDraft() {
+                const reviewContent = document.getElementById('reviewContent');
+                reviewContent.innerHTML = '';
+
+                currentDraft.sections.forEach((sec, sIdx) => {
+                    const secWrapper = document.createElement('div');
+                    secWrapper.style.cssText = "margin-bottom: 2.5rem; background: #fafafa; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--glass-border);";
+
+                    let html = `<div class="review-section-header">
+                        <div class="section-info">
+                            <span style="font-weight: 800; font-size: 1.1rem;">${sec.sectionName}</span>
+                            <span style="color:var(--text-muted); font-size: 0.9rem;">(${sec.questionType} - ${sec.marksPerQuestion} marks each)</span>
+                        </div>
+                        <div class="question-count">${sec.questions.length} Questions</div>
+                    </div>`;
+
+                    if (sec.questions.length === 0) {
+                        html += `<p style="color:var(--text-muted); font-style:italic; text-align:center; padding: 1rem;">No questions in this section</p>`;
+                    } else {
+                        sec.questions.forEach((q, qIdx) => {
+                            html += `
+                                <div class="review-q-card">
+                                    <div style="flex:1;">
+                                        <p style="font-weight: 600; font-size:1rem; margin-bottom: 6px; line-height: 1.4;">${qIdx + 1}. ${q.question}</p>
+                                        <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+                                            <small style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; color:var(--text-muted);">${q.chapterName}</small>
+                                            <small style="background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; color:var(--text-muted);">${q.topicName}</small>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="window.deleteDraftQuestion(${sIdx}, qIdx)" 
+                                        style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; width:40px; height:40px; border-radius:10px; cursor:pointer; transition: all 0.2s;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    secWrapper.innerHTML = html;
+                    reviewContent.appendChild(secWrapper);
+                });
+            }
+
+            window.deleteDraftQuestion = (sIdx, qIdx) => {
+                currentDraft.sections[sIdx].questions.splice(qIdx, 1);
+                renderReviewDraft();
+            };
+
+            const reviewBtn = document.getElementById('reviewQuestionsBtn');
+            reviewBtn.addEventListener('click', async () => {
+                const payload = getPaperPayload();
+                if (!payload) return;
+
+                reviewBtn.disabled = true;
+                reviewBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+
+                try {
+                    const response = await fetch('/questions/preview-questions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        currentDraft = await response.json();
+                        document.getElementById('reviewPortal').style.display = 'block';
+                        renderReviewDraft();
+                        document.getElementById('reviewPortal').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        showToast("Failed to fetch questions", "error");
+                    }
+                } catch (e) {
+                    showToast("Error: " + e.message, "error");
+                } finally {
+                    reviewBtn.disabled = false;
+                    reviewBtn.innerHTML = '<i class="fas fa-search-plus"></i> Review & Preview PDF';
+                }
+            });
+
+            async function generateReviewedBlob(isDownload = false) {
+                if (!currentDraft) return;
+                const btn = isDownload ? document.getElementById('downloadFinalPdfBtn') : document.getElementById('updatePdfPreviewBtn');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
+                try {
+                    const response = await fetch('/questions/generate-reviewed-pdf', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(currentDraft)
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        if (isDownload) {
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `ExamPaper_${currentDraft.subjectName}.pdf`;
+                            a.click();
+                        } else {
+                            const pdfEmbed = document.getElementById('pdfEmbed');
+                            const placeholder = document.getElementById('pdfPlaceholder');
+                            pdfEmbed.src = url;
+                            pdfEmbed.style.display = 'block';
+                            placeholder.style.display = 'none';
+                        }
+                    } else {
+                        showToast("Failed to generate PDF", "error");
+                    }
+                } catch (e) {
+                    showToast("Error: " + e.message, "error");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+
+            document.getElementById('updatePdfPreviewBtn').addEventListener('click', () => generateReviewedBlob(false));
+            document.getElementById('downloadFinalPdfBtn').addEventListener('click', () => generateReviewedBlob(true));
+
+            generateBtn.addEventListener('click', async () => {
+                const payload = getPaperPayload();
+                if (!payload) return;
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                try {
+                    const response = await fetch('/questions/generate-sectioned', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `Paper_${payload.subjectName}.pdf`;
+                        a.click();
+                        showToast('PDF Generated!', 'success');
+                    }
+                } catch (e) { } finally {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-bolt"></i> Direct Generate PDF';
+                }
+            });
+
+            // Sidebar Dropdown Toggle Logic
+            const toggle = document.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const menuItem = this.closest('.menu-item');
+                    menuItem.classList.toggle('open');
+                });
+            }
+
+            // Mobile Sidebar Toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            if (sidebar && sidebarOverlay) {
+                const toggleSidebar = () => {
+                    sidebar.classList.toggle('active');
+                    sidebarOverlay.classList.toggle('active');
+                };
+
+                if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+                if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+                sidebarOverlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Global Search Logic
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                const container = searchInput.parentElement;
+                const menu = document.createElement('div');
+                menu.className = 'custom-dropdown-menu';
+                menu.style.width = '100.5%';
+                menu.style.left = '-1px';
+                menu.style.top = 'calc(100% + 10px)';
+                container.style.position = 'relative';
+                container.appendChild(menu);
+
+                let searchTimeout;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    const keyword = searchInput.value.trim();
+                    if (keyword.length < 2) {
+                        menu.style.display = 'none';
+                        return;
+                    }
+
+                    searchTimeout = setTimeout(async () => {
+                        try {
+                            const response = await fetch(`/questions/search?keyword=${encodeURIComponent(keyword)}`);
+                            if (response.ok) {
+                                const questions = await response.json();
+                                if (questions.length === 0) {
+                                    menu.innerHTML = '<div class="custom-dropdown-item"><span>No matching questions in bank</span></div>';
+                                } else {
+                                    menu.innerHTML = questions.map(q => `
+                                        <div class="custom-dropdown-item" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 20px; border-bottom: 1px solid var(--glass-border);">
+                                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--primary-color); line-height: 1.4;">${q.question}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 12px; align-items: center; margin-top: 4px;">
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-book" style="font-size: 0.7rem;"></i> ${q.subjectName}</span>
+                                                <span style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-layer-group" style="font-size: 0.7rem;"></i> ${q.topicName}</span>
+                                                <span style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.65rem; text-transform: uppercase;">${q.difficultyType}</span>
+                                            </div>
+                                        </div>
+                                    `).join('');
+                                }
+                                menu.style.display = 'block';
+                            }
+                        } catch (err) { console.error('Search error', err); }
+                    }, 300);
+                });
+
+                document.addEventListener('mousedown', (e) => {
+                    if (!container.contains(e.target)) menu.style.display = 'none';
+                });
+
+                // Logout Confirmation Logic
+                const logoutModal = document.getElementById('logoutModal');
+                const logoutTriggers = document.querySelectorAll('.logout-trigger');
+                const confirmLogoutBtn = document.getElementById('confirmLogout');
+                const cancelLogoutBtn = document.getElementById('cancelLogout');
+
+                logoutTriggers.forEach(trigger => {
+                    trigger.onclick = () => logoutModal.style.display = 'flex';
+                });
+
+                cancelLogoutBtn.onclick = () => logoutModal.style.display = 'none';
+                window.onclick = (e) => { if (e.target == logoutModal) logoutModal.style.display = 'none'; };
+
+                confirmLogoutBtn.onclick = function () {
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    setTimeout(() => { window.location.href = "/logout"; }, 800);
+                };
+            }
+        });
+    </script>
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-card" style="text-align: center;">
+            <div
+                style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 1.5rem;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Logging Out?</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Are you sure you want to end your
+                session? You will need to login again to access your QuestBank.</p>
+            <div class="logout-confirm-btns">
+                <button class="btn-confirm btn-no" id="cancelLogout">Not Now</button>
+                <button class="btn-confirm btn-yes" id="confirmLogout">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Documentation</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .docs-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            align-items: start;
+        }
+
+        .docs-sidebar {
+            position: sticky;
+            top: 2rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .docs-nav-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .docs-nav-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .docs-nav-link:hover,
+        .docs-nav-link.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .docs-content {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .docs-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .docs-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .docs-section p {
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--primary-color);
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+
+        @media (max-width: 900px) {
+            .docs-container {
+                grid-template-columns: 1fr;
+            }
+
+            .docs-sidebar {
+                display: none;
+                /* Hide sidebar on mobile for simplicity */
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .docs-section p,
+            .docs-section li {
+                text-align: justify;
+                hyphens: auto;
+            }
+
+            .docs-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link">
+                    <i class="fas fa-database" style="color: var(--primary-color);"></i><span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="/generator" class="submenu-link"><i class="fas fa-plus"></i> Add
+                            Question</a></li>
+                    <li class="submenu-item"><a href="/create-paper" class="submenu-link"><i
+                                class="fas fa-file-invoice"></i> Create Paper</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <header>
+                <h1>User Guide & Documentation</h1>
+                <p class="subtitle">Comprehensive guide to using the QuestBank platform</p>
+            </header>
+
+            <div class="docs-container">
+                <aside class="docs-sidebar">
+                    <div class="docs-nav-title">Fundamentals</div>
+                    <a href="#introduction" class="docs-nav-link active">Introduction</a>
+                    <a href="#quick-start" class="docs-nav-link">Quick Start</a>
+
+                    <div class="docs-nav-title" style="margin-top: 1.5rem;">Managing Questions</div>
+                    <a href="#adding-manual" class="docs-nav-link">Manual Entry</a>
+                    <a href="#ai-generation" class="docs-nav-link">AI Generation</a>
+                    <a href="#pdf-import" class="docs-nav-link">PDF Import</a>
+
+                    <div class="docs-nav-title" style="margin-top: 1.5rem;">Generating Papers</div>
+                    <a href="#paper-templates" class="docs-nav-link">Templates</a>
+                    <a href="#export-formats" class="docs-nav-link">Export Formats</a>
+                </aside>
+
+                <main class="docs-content">
+                    <section id="introduction" class="docs-section">
+                        <h2>Introduction</h2>
+                        <p>Welcome to <strong>QuestBank</strong>, your intelligent partner for question bank management
+                            and automated paper generation. Designed for educators, schools, and coaching institutes,
+                            QuestBank streamlines the tedious process of creating exams.</p>
+                        <p>With QuestBank, you can build a robust repository of questions across various subjects, valid
+                            difficulties, and formats. Our advanced AI integration even helps you generate new questions
+                            from raw text, ensuring your bank never runs dry.</p>
+                    </section>
+
+                    <section id="quick-start" class="docs-section">
+                        <h2>Quick Start Guide</h2>
+                        <p>Get up and running in minutes:</p>
+                        <ol
+                            style="margin-left: 1.5rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                            <li><strong>Sign Up/Login:</strong> Access your secure dashboard.</li>
+                            <li><strong>Add Questions:</strong> Use the "Add Question" feature to populate your database
+                                manually or via AI.</li>
+                            <li><strong>Create Paper:</strong> Navigate to "Create Paper", select your criteria
+                                (Subject, Class, Difficulty), and let the system generate a formatted PDF.</li>
+                            <li><strong>Download:</strong> Export your paper and solution key instantly.</li>
+                        </ol>
+                        <div
+                            style="background: #e0f2fe; padding: 1rem; border-left: 4px solid #0284c7; border-radius: 4px; color: #0284c7;">
+                            <i class="fas fa-info-circle"></i> <strong>Tip:</strong> Start by adding at least 10
+                            questions per subject to generate meaningful papers.
+                        </div>
+                    </section>
+
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 3rem 0;">
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.4rem; color: var(--text-main); margin-bottom: 1rem;">Managing Questions
+                        </h3>
+
+                        <section id="adding-manual" class="docs-section">
+                            <h4><i class="fas fa-edit" style="color: var(--primary-color); margin-right: 0.5rem;"></i>
+                                Manual Entry</h4>
+                            <p>To add a question manually:</p>
+                            <ol style="margin-left: 1.5rem; color: var(--text-muted); line-height: 1.7;">
+                                <li><strong>Question Text:</strong> Enter the main question stem clearly.</li>
+                                <li><strong>Options:</strong> Provide 4 distinct options (for MCQs). Mark the correct
+                                    answer.</li>
+                                <li><strong>Metadata:</strong> Select the Subject, Class (e.g., 10th, 12th), Topic, and
+                                    Difficulty Level (Easy, Medium, Hard).</li>
+                            </ol>
+                            <p>Correct metadata is crucial for the random paper generator to work effectively.</p>
+                        </section>
+
+                        <section id="ai-generation" class="docs-section">
+                            <h4><i class="fas fa-robot" style="color: var(--primary-color); margin-right: 0.5rem;"></i>
+                                AI Generation</h4>
+                            <p>Leverage the power of AI (powered by Groq Llama models) to create questions
+                                automatically.</p>
+                            <p><strong>How to use:</strong></p>
+                            <ul style="margin-left: 1.5rem; color: var(--text-muted); line-height: 1.7;">
+                                <li>Enter a <strong>Subject</strong> and <strong>Topic</strong> (e.g., "History", "World
+                                    War II").</li>
+                                <li>Select the number of questions and difficulty.</li>
+                                <li>Click <strong>"Generate"</strong>. The AI will produce a list of questions which you
+                                    can review and save to your bank.</li>
+                            </ul>
+                            <div
+                                style="background: #f0fdf4; padding: 1rem; border-left: 4px solid #16a34a; border-radius: 4px; color: #15803d; margin-top: 1rem;">
+                                <code>Beta Feature:</code> The AI model is optimized for general academic subjects.
+                                Always review generated content for accuracy.
+                            </div>
+                        </section>
+
+                        <section id="pdf-import" class="docs-section">
+                            <h4><i class="fas fa-file-pdf"
+                                    style="color: var(--primary-color); margin-right: 0.5rem;"></i> PDF Import (Coming
+                                Soon)</h4>
+                            <p>We are working on a feature to scan PDF textbooks or previous year papers and
+                                automatically extract questions into your repository. Stay tuned for updates!</p>
+                        </section>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 3rem 0;">
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.4rem; color: var(--text-main); margin-bottom: 1rem;">Generating Papers
+                        </h3>
+
+                        <section id="paper-templates" class="docs-section">
+                            <h4>Settings & Templates</h4>
+                            <p>When creating a paper, you define the structure:</p>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                                <thead>
+                                    <tr style="background: #f8fafc; text-align: left;">
+                                        <th style="padding: 0.8rem; border: 1px solid var(--glass-border);">Parameter
+                                        </th>
+                                        <th style="padding: 0.8rem; border: 1px solid var(--glass-border);">Description
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">
+                                            <strong>Total Marks</strong>
+                                        </td>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">Set the
+                                            maximum marks for the paper.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">
+                                            <strong>Sections</strong>
+                                        </td>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">Divide paper
+                                            into sections (e.g., Section A: MCQs, Section B: Theory).</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">
+                                            <strong>Difficulty Mix</strong>
+                                        </td>
+                                        <td style="padding: 0.8rem; border: 1px solid var(--glass-border);">Adjust the
+                                            ratio of Easy, Medium, and Hard questions (e.g., 30:50:20).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <section id="export-formats" class="docs-section">
+                            <h4>Export Formats</h4>
+                            <p>QuestBank currently supports exporting papers in:</p>
+                            <ul>
+                                <li><strong>PDF:</strong> Professional, print-ready format with school header and logo.
+                                </li>
+                                <li><strong>Word (DOCX):</strong> Editable format for last-minute manual tweaks
+                                    (Planned).</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 3rem 0;">
+
+                    <section id="faq" class="docs-section">
+                        <h2>Frequently Asked Questions</h2>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Is my data
+                                secure?</h5>
+                            <p style="margin-bottom: 0;">Yes, all question data is stored securely. Your question bank
+                                is private to your organization.</p>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Can I add
+                                images to questions?</h5>
+                            <p style="margin-bottom: 0;">Currently, we support text-based questions. Image support for
+                                diagrams and charts is on our roadmap.</p>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">How many
+                                papers can I generate?</h5>
+                            <p style="margin-bottom: 0;">There is no limit to the number of papers you can generate on
+                                the standard plan.</p>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <footer class="main-footer" style="margin-top: 4rem;">
+                <div>&copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/"
+                        target="_blank" style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh
+                        Shakya</a></div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.closest('.menu-item').classList.toggle('open');
+                });
+            }
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            };
+            if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+            if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // Smooth Scroll for Docs
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Login</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, #1e1b4b, #000000);
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #4f46e5, #ec4899);
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0.15;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+        }
+
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-logo-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            filter: brightness(0.6) contrast(1.2);
+        }
+
+        .auth-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #d1d5db;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 0.3rem;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.85rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        .error-message i {
+            color: red !important;
+        }
+
+        .error-message span {
+            color: white !important;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        /* Ambient Glows */
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.15), transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(50px);
+        }
+
+        .glow-1 {
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow-2 {
+            bottom: -100px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.15), transparent 70%);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow: hidden !important;
+                height: 100dvh;
+            }
+
+            .auth-container {
+                height: 100dvh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .auth-card {
+                padding: 2rem 1.5rem;
+                max-height: 95dvh;
+                overflow-y: auto;
+                scrollbar-width: none;
+                /* Firefox */
+                -ms-overflow-style: none;
+                /* IE 10+ */
+            }
+
+            .auth-card::-webkit-scrollbar {
+                display: none;
+                /* Chrome/Safari/Webkit */
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .glow {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* Autofill Input Fix */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+            caret-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="logo-section">
+                <img src="/images/QuestBank.png" alt="QuestBank Logo" class="auth-logo-icon">
+                <h1 class="auth-title">Login to your Account</h1>
+                <p class="auth-subtitle">Explore the Intelligent QuestBank platform</p>
+            </div>
+
+            <div id="loginError" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Invalid email or password.</span>
+            </div>
+
+            <div th:if="${param.logout}" class="error-message"
+                style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); display: flex;">
+                <i class="fas fa-check-circle"></i>
+                Logged out successfully.
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="username" name="email" placeholder="name@company.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
+                    <a href="javascript:void(0)" id="openResetModal"
+                        style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none;">Reset Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="/signup">Create account</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="resetModal">
+        <div class="modal-card">
+            <i class="fas fa-times close-modal" id="closeResetModal"></i>
+            <h2 class="auth-title" style="font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center;">Reset Password
+            </h2>
+
+            <form id="resetForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Your account email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Secret Key
+                        <span class="info-icon-container">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="custom-tooltip">Provide the secret key you set during registration to verify
+                                your identity.</span>
+                        </span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="password" name="secretKey" placeholder="Enter secret key" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="newPassword" placeholder="Enter new password" required>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn" id="resetBtn">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Reset Success Modal -->
+    <div class="modal-overlay" id="resetSuccessModal">
+        <div class="modal-card" style="text-align: center;">
+            <div
+                style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas fa-check-circle" style="color: #10b981; font-size: 2rem;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Password Updated!</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">Your
+                password
+                has been reset successfully. You can now log in with your new credentials.</p>
+            <button class="login-btn" id="closeSuccessBtn" style="width: auto; padding: 0.75rem 2rem;">Dismiss</button>
+        </div>
+    </div>
+
+    <!-- Password Reset Error Modal -->
+    <div class="modal-overlay" id="resetErrorModal">
+        <div class="modal-card" style="text-align: center;">
+            <div
+                style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 2rem;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Reset Failed</h2>
+            <p id="resetErrorText"
+                style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                Invalid secret key or email. Please try again.</p>
+            <button class="login-btn" id="closeErrorBtn"
+                style="width: auto; padding: 0.75rem 2rem; background: #ef4444;">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Reset Modal Logic
+        const resetModal = document.getElementById('resetModal');
+        const openResetBtn = document.getElementById('openResetModal');
+        const closeResetBtn = document.getElementById('closeResetModal');
+        const resetSuccessModal = document.getElementById('resetSuccessModal');
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+        const resetErrorModal = document.getElementById('resetErrorModal');
+        const closeErrorBtn = document.getElementById('closeErrorBtn');
+        const resetErrorText = document.getElementById('resetErrorText');
+
+        openResetBtn.onclick = () => resetModal.style.display = 'flex';
+        closeResetBtn.onclick = () => resetModal.style.display = 'none';
+        closeSuccessBtn.onclick = () => resetSuccessModal.style.display = 'none';
+        closeErrorBtn.onclick = () => resetErrorModal.style.display = 'none';
+
+        window.onclick = (e) => {
+            if (e.target == resetModal) resetModal.style.display = 'none';
+            if (e.target == resetSuccessModal) resetSuccessModal.style.display = 'none';
+            if (e.target == resetErrorModal) resetErrorModal.style.display = 'none';
+        };
+
+        document.getElementById('resetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('resetBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/v1/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    resetModal.style.display = 'none';
+                    resetSuccessModal.style.display = 'flex';
+                    e.target.reset();
+                } else {
+                    const msg = await response.text();
+                    resetErrorText.innerText = msg || "Invalid secret key or email. Please check your credentials.";
+                    resetErrorModal.style.display = 'flex';
+                }
+            } catch (err) {
+                alert("Network error occurred.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            const errorText = document.getElementById('errorText');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            errorDiv.style.display = 'none';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/v1/auth/authenticate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.cookie = `jwt=${result.token}; path=/; max-age=86400; samesite=strict`;
+                    window.location.href = '/';
+                } else {
+                    errorText.innerText = 'Invalid email or password.';
+                    errorDiv.style.display = 'flex';
+                    errorDiv.style.visibility = 'visible';
+                    errorDiv.style.opacity = '1';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Sign In';
+                }
+            } catch (err) {
+                errorText.innerText = 'Service unavailable. Please try again.';
+                errorDiv.style.display = 'flex';
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+            }
+        });
+    </script>
+</body>
+
+</html>

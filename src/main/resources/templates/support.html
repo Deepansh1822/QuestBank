@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestBank | Support</title>
+    <link rel="icon" type="image/png" href="/images/QuestBank.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .support-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .support-icon-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .support-card {
+                padding: 1.5rem;
+            }
+
+            .support-icon-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .btn-outline {
+                width: 100%;
+                padding: 0.8rem;
+            }
+        }
+
+        .support-grid-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto;
+        }
+
+        @media (max-width: 900px) {
+            .support-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div class="mobile-navbar">
+        <a href="/" class="mobile-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span>QuestBank</span>
+        </a>
+        <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-chevron-left"></i></div>
+        <a href="/" class="sidebar-logo">
+            <div class="logo-icon"><img src="/images/QuestBank.png" alt="QuestBank Logo"></div>
+            <span class="logo-text">QuestBank</span>
+        </a>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="/" class="menu-link">
+                    <i class="fas fa-database" style="color: var(--primary-color);"></i><span>QuestBank</span>
+                    <i class="fas fa-chevron-right dropdown-toggle" style="font-size: 0.8rem; margin-left: auto;"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="/generator" class="submenu-link"><i class="fas fa-plus"></i> Add
+                            Question</a></li>
+                    <li class="submenu-item"><a href="/create-paper" class="submenu-link"><i
+                                class="fas fa-file-invoice"></i> Create Paper</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer" th:if="${user != null}">
+            <a href="/profile" class="sidebar-user-profile">
+                <img th:src="${user.profileImage != null ? user.profileImage : 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=4f46e5&color=fff'}"
+                    class="user-avatar" alt="User Avatar">
+                <div class="user-info-mini">
+                    <span class="user-name" th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                    <span class="user-role" th:text="${user.role}">USER</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <div style="text-align: center;">
+
+                <header>
+                    <h1>Support Center</h1>
+                    <p class="subtitle">Technical issues? We're here to solve them.</p>
+                </header>
+            </div>
+
+            <div class="support-grid-container">
+                <!-- Ticket Submission Card -->
+                <div class="support-card" id="ticketCard" style="text-align: left;">
+                    <div style="text-align: center;">
+                        <div class="support-icon-circle"><i class="fas fa-ticket-alt"></i></div>
+                        <h3>Submit a Support Ticket</h3>
+                        <p class="subtitle" style="font-size: 0.95rem; margin-top: 1rem; margin-bottom: 2rem;">
+                            Describe your issue in detail. Our engineering team reviews tickets within 24 hours.
+                        </p>
+                    </div>
+
+                    <!-- Toast Container -->
+                    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+                    <form id="ticketForm">
+                        <div class="name-email-grid">
+                            <div class="form-group">
+                                <label class="form-label"
+                                    style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Name</label>
+                                <input type="text" name="name" class="form-input"
+                                    style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px;"
+                                    placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"
+                                    style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Email</label>
+                                <input type="email" name="email" class="form-input"
+                                    style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px;"
+                                    placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <style>
+                            .name-email-grid {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                gap: 1rem;
+                            }
+
+                            @media (max-width: 600px) {
+                                .name-email-grid {
+                                    grid-template-columns: 1fr;
+                                }
+                            }
+                        </style>
+
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label class="form-label"
+                                style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Issue
+                                Category</label>
+                            <select name="subject" class="form-input"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px; background: white;"
+                                required>
+                                <option value="" disabled selected>Select an issue type...</option>
+                                <option value="Bug Report">🐛 Bug Report</option>
+                                <option value="Account Issue">🔐 Account/Login Issue</option>
+                                <option value="PDF Generation">📄 PDF Generation Error</option>
+                                <option value="Feature Request">💡 Feature Request</option>
+                                <option value="Other">❓ Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label class="form-label"
+                                style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Problem
+                                Description</label>
+                            <textarea name="message" class="form-input" rows="5"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit;"
+                                placeholder="Please describe the issue, including steps to reproduce it..."
+                                required></textarea>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn-outline"
+                            style="width: 100%; background: var(--primary-color); color: white; margin-top: 2rem; border: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <span style="color:aliceblue">Submit Ticket</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Live Chat Card (Coming Soon) -->
+                <div class="support-card"
+                    style="display: flex; flex-direction: column; justify-content: center; height: fit-content;">
+                    <div style="text-align: center;">
+                        <div class="support-icon-circle"><i class="fas fa-comments"></i></div>
+                        <h3>Live Chat</h3>
+                        <p class="subtitle" style="font-size: 0.95rem; margin-top: 1rem; margin-bottom: 2rem;">
+                            Chat with our support agents for real-time assistance.
+                        </p>
+                        <button class="btn-outline"
+                            style="width: 100%; border-color: var(--text-muted); color: var(--text-muted); cursor: not-allowed; opacity: 0.7;"
+                            disabled>
+                            Coming Soon...
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reusing Toast Styles from Contact Page -->
+            <style>
+                .toast {
+                    min-width: 300px;
+                    padding: 1rem 1.5rem;
+                    margin-bottom: 1rem;
+                    border-radius: 8px;
+                    color: white;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.8rem;
+                }
+
+                .toast.show {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                .toast.success {
+                    background-color: #10B981;
+                }
+
+                .toast.error {
+                    background-color: #EF4444;
+                }
+
+                .spinner {
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    border-top-color: white;
+                    animation: spin 0.8s linear infinite;
+                    display: none;
+                }
+
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                button:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+            </style>
+
+            <script>
+                // Ticket Submission Logic (Reusing Contact Endpoint)
+                document.addEventListener('DOMContentLoaded', () => {
+                    const ticketForm = document.getElementById('ticketForm');
+                    const submitBtn = document.getElementById('submitBtn');
+                    const btnText = submitBtn.querySelector('span');
+
+                    // Create spinner
+                    const spinner = document.createElement('div');
+                    spinner.className = 'spinner';
+                    submitBtn.prepend(spinner);
+
+                    function showToast(message, type) {
+                        const container = document.getElementById('toast-container');
+                        const toast = document.createElement('div');
+                        toast.className = `toast ${type}`;
+                        const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+                        toast.innerHTML = `${icon}<span>${message}</span>`;
+                        container.appendChild(toast);
+                        toast.offsetHeight; // Reflow
+                        requestAnimationFrame(() => toast.classList.add('show'));
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                            setTimeout(() => toast.remove(), 300);
+                        }, 3000);
+                    }
+
+                    if (ticketForm) {
+                        ticketForm.addEventListener('submit', async function (e) {
+                            e.preventDefault();
+
+                            submitBtn.disabled = true;
+                            spinner.style.display = 'block';
+                            btnText.textContent = 'Submitting...';
+
+                            const formData = new FormData(this);
+                            // Map 'Issue Category' dropdown to 'Subject' field expected by backend
+                            // The dropdown name is 'subject', so formData already has it.
+                            // We might want to prepend "Support Ticket: " to it.
+                            const category = formData.get('subject');
+                            formData.set('subject', `[Support Ticket] ${category}`);
+
+                            try {
+                                const response = await fetch('/contact', { // Reusing the contact endpoint
+                                    method: 'POST',
+                                    body: formData
+                                });
+
+                                const data = await response.json();
+
+                                if (response.ok) {
+                                    showToast('Ticket #T-' + Math.floor(1000 + Math.random() * 9000) + ' created successfully!', 'success');
+                                    ticketForm.reset();
+                                } else {
+                                    throw new Error(data.message || 'Failed to submit ticket');
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                                showToast(error.message || 'Submission failed. Please try again.', 'error');
+                            } finally {
+                                submitBtn.disabled = false;
+                                spinner.style.display = 'none';
+                                btnText.textContent = 'Submit Ticket';
+                            }
+                        });
+                    }
+                });
+            </script>
+
+            <footer class="main-footer" style="margin-top: 4rem;">
+                <div>&copy; 2026, made with ❤️ by <a href="https://deepansh-react-portfolio.netlify.app/"
+                        target="_blank" style="text-decoration: none; font-weight: bold; color: #697a8d;">Deepansh
+                        Shakya</a></div>
+                <ul class="footer-links">
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/documentation">Documentation</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.closest('.menu-item').classList.toggle('open');
+                });
+            }
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            };
+            if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+            if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+        });
+    </script>
+</body>
+
+</html>
