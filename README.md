@@ -96,6 +96,15 @@ Manage thousand of questions with ease. Categorize by:
 
 ![Dashboard Mockup](./assets/QB-Dashboard.png)
 *Professional Dashboard Interface*
+![Dashboard Mockup](./assets/qb3.png)
+*Question Bank Generator Interface*
+![Dashboard Mockup](./assets/qb8.png)
+*Ways to Generate Questions in the Bank*
+![Dashboard Mockup](./assets/qb16.png)
+*Review & Edit Questions in the Generated Paper*
+![Dashboard Mockup](./assets/qb17.png)
+*See Final PDF before Download Paper*
+
 
 ---
 
@@ -128,12 +137,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4.  Push to the Branch (`git push origin feature/AmazingFeature`)
 5.  Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
