@@ -1,6 +1,5 @@
 # 🎓 QuestBank: Advanced Question Bank & Paper Generator
 
-![Banner](./assets/qb1.png)
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
@@ -95,7 +94,7 @@ Manage thousand of questions with ease. Categorize by:
 
 ## 📸 Screenshots
 
-![Dashboard Mockup](./assets/questbank_dashboard_mockup.png)
+![Dashboard Mockup](./assets/QB-Dashboard.png)
 *Professional Dashboard Interface*
 
 ---
