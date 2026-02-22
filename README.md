@@ -1,9 +1,15 @@
 # 🎓 QuestBank: Advanced Question Bank & Paper Generator
 
+<div align="center">
+  <img src="assets/QB-Logo.png" alt="EveEdge Logo" width="200" height="200">
+  <p align="center">
+    <strong>A comprehensive, premium solution for managing events, bookings, and ticket generation.</strong>
+  </p>
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
-[![MySQL](https://img.shields.io/badge/MySQL-Connector-blue.svg)](https://www.mysql.com/)
+  [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
+  [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+  [![MySQL](https://img.shields.io/badge/MySQL-Connector-blue.svg)](https://www.mysql.com/)
+</div>
 
 **QuestBank** is a sophisticated, AI-enhanced Spring Boot application designed to streamline the process of creating, managing, and generating academic question papers. Whether you need to import questions from PDFs, generate new ones using AI, or organize complex multi-section exams, QuestBank provides a clean and professional solution.
 
@@ -94,16 +100,11 @@ Manage thousand of questions with ease. Categorize by:
 
 ## 📸 Screenshots
 
-![Dashboard Mockup](./assets/QB-Dashboard.png)
-*Professional Dashboard Interface*
-![Dashboard Mockup](./assets/qb3.png)
-*Question Bank Generator Interface*
-![Dashboard Mockup](./assets/qb8.png)
-*Ways to Generate Questions in the Bank*
-![Dashboard Mockup](./assets/qb16.png)
-*Review & Edit Questions in the Generated Paper*
-![Dashboard Mockup](./assets/qb17.png)
-*See Final PDF before Download Paper*
+| Dashboard | QestionBank Generator | Question Generation Methods |
+|---|---|---|
+| ![Dashboard Placeholder](assets/QB-Dashboard.png) | ![Events Placeholder](assets/qb3.png) | ![Payment Placeholder](assets/qb8.png) |
+| Review & Edit Paper | Final PDF Preview |
+| ![Dashboard Placeholder](assets/qb16.png) | ![Events Placeholder](assets/qb17.png) |
 
 
 ---
