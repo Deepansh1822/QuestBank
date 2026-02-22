@@ -100,12 +100,28 @@ Manage thousand of questions with ease. Categorize by:
 
 ## 📸 Screenshots
 
-| Dashboard | QestionBank Generator | Question Generation Methods |
-|---|---|---|
-| ![Dashboard Placeholder](assets/QB-Dashboard.png) | ![Events Placeholder](assets/qb3.png) | ![Payment Placeholder](assets/qb8.png) |
-| Review & Edit Paper | Final PDF Preview |
-| ![Dashboard Placeholder](assets/qb16.png) | ![Events Placeholder](assets/qb17.png) |
-
+<table align="center">
+  <tr>
+    <td align="center"><b>Dashboard</b></td>
+    <td align="center"><b>QuestionBank Generator</b></td>
+    <td align="center"><b>Questions Generation Methods</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/QB-Dashboard.png" width="300"></td>
+    <td><img src="assets/qb3.png" width="300"></td>
+    <td><img src="assets/qb8.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="1.5"><b>Review & Edit Paper</b></td>
+    <td align="center" colspan="1.5"><b>Final PDF Preview</b></td>
+    <td></td> <!-- Spacing cell -->
+  </tr>
+  <tr>
+    <td colspan="1.5"><img src="assets/qb16.png" width="300"></td>
+    <td colspan="1.5"><img src="assets/qb17.png" width="300"></td>
+    <td></td>
+  </tr>
+</table>
 
 ---
 
