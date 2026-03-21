@@ -1,11 +1,24 @@
 # 🎓 QuestBank: Advanced Question Bank & Paper Generator
 
+<<<<<<< HEAD
 ![Banner](./assets/questbank_banner.png)
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![MySQL](https://img.shields.io/badge/MySQL-Connector-blue.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+=======
+<div align="center">
+  <img src="assets/QB-Logo.png" alt="EveEdge Logo" width="200" height="200">
+  <p align="center">
+    <strong>A comprehensive, premium solution for managing events, bookings, and ticket generation.</strong>
+  </p>
+
+  [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
+  [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+  [![MySQL](https://img.shields.io/badge/MySQL-Connector-blue.svg)](https://www.mysql.com/)
+</div>
+>>>>>>> 9c5a67214cc5b16437261596bcb192dac278283d
 
 **QuestBank** is a sophisticated, AI-enhanced Spring Boot application designed to streamline the process of creating, managing, and generating academic question papers. Whether you need to import questions from PDFs, generate new ones using AI, or organize complex multi-section exams, QuestBank provides a clean and professional solution.
 
@@ -96,8 +109,33 @@ Manage thousand of questions with ease. Categorize by:
 
 ## 📸 Screenshots
 
+<<<<<<< HEAD
 ![Dashboard Mockup](./assets/questbank_dashboard_mockup.png)
 *Professional Dashboard Interface*
+=======
+<table align="center">
+  <tr>
+    <td align="center"><b>Dashboard</b></td>
+    <td align="center"><b>QuestionBank Generator</b></td>
+    <td align="center"><b>Questions Generation Methods</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/QB-Dashboard.png" width="300"></td>
+    <td><img src="assets/qb3.png" width="300"></td>
+    <td><img src="assets/qb8.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="1.5"><b>Review & Edit Paper</b></td>
+    <td align="center" colspan="1.5"><b>Final PDF Preview</b></td>
+    <td></td> <!-- Spacing cell -->
+  </tr>
+  <tr>
+    <td colspan="1.5"><img src="assets/qb16.png" width="300"></td>
+    <td colspan="1.5"><img src="assets/qb17.png" width="300"></td>
+    <td></td>
+  </tr>
+</table>
+>>>>>>> 9c5a67214cc5b16437261596bcb192dac278283d
 
 ---
 
@@ -133,6 +171,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
+<<<<<<< HEAD
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -142,3 +181,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <p align="center">
   Made with ❤️ by <a href="https://github.com/Deepansh1822">Deepansh</a>
 </p>
+=======
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/Deepansh1822">Deepansh</a>
+</p>
+
+>>>>>>> 9c5a67214cc5b16437261596bcb192dac278283d
