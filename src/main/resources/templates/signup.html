@@ -22,8 +22,8 @@
 
         .auth-container {
             width: 100%;
-            max-width: 500px;
-            padding: 1rem;
+            max-width: 1000px;
+            padding: 2rem;
             position: relative;
         }
 
@@ -32,10 +32,48 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 0;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 1;
+            display: flex;
+            overflow: hidden;
+            min-height: 550px;
+        }
+
+        .auth-left {
+            flex: 1;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .auth-right {
+            flex: 1.2;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .auth-left-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .auth-left-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .auth-card::before {
@@ -225,26 +263,34 @@
 
         @media (max-width: 768px) {
             body {
-                overflow: hidden !important;
-                height: 100dvh;
+                overflow: auto !important;
+                height: auto;
+                padding: 2rem 0;
             }
 
             .auth-container {
                 padding: 1rem;
-                height: 100dvh;
+                height: auto;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
 
             .auth-card {
-                padding: 1.5rem;
-                max-height: 95dvh;
-                overflow-y: auto;
-                scrollbar-width: none;
-                /* Firefox */
-                -ms-overflow-style: none;
-                /* IE 10+ */
+                padding: 0;
+                max-height: none;
+                overflow-y: visible;
+                flex-direction: column;
+            }
+
+            .auth-left {
+                padding: 2rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .auth-right {
+                padding: 2rem 1.5rem;
             }
 
             .auth-card::-webkit-scrollbar {
@@ -297,68 +343,77 @@
                     style="text-decoration:none; display:inline-block; width:auto; padding:0.9rem 2rem;">Go to Login</a>
             </div>
 
-            <div class="logo-section">
-                <img src="/images/QuestBank.png" alt="QuestBank Logo" class="auth-logo-icon">
-                <h1 class="auth-title">Create Account</h1>
-                <p class="auth-subtitle">Join the Intelligent QuestBank platform</p>
+            <div class="auth-left">
+                <img src="/images/QuestBank.png" alt="QuestBank Logo" class="auth-logo-icon"
+                    style="width: 80px; height: 80px; filter: brightness(1) drop-shadow(0 0 20px rgba(79,70,229,0.5)); margin-bottom: 1.5rem;">
+                <h1 class="auth-left-title">Join Us Today!</h1>
+                <p class="auth-left-subtitle">Create an account to experience the power of the Intelligent QuestBank
+                    platform. Unlock personalized features and seamless paper generation.</p>
             </div>
+            <div class="auth-right">
+                <div class="logo-section" style="align-items: flex-start; margin-bottom: 1.5rem;">
+                    <h1 class="auth-title" style="font-size: 1.75rem;">Create Account</h1>
+                    <p class="auth-subtitle">Fill in your details to get started</p>
+                </div>
 
-            <form id="signupForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="firstName" name="firstName" placeholder="John" required>
+                <form id="signupForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="firstName" name="firstName" placeholder="John" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                            </div>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
+                        <label for="email">Email Address</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" placeholder="john@example.com" required>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <div class="form-group">
+                        <label for="secretKey">
+                            Secret Key
+                            <span class="info-icon-container">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="custom-tooltip">This key is required to reset your password if you forget
+                                    it.
+                                    Keep it memorable!</span>
+                            </span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="secretKey" name="secretKey" placeholder="A memorable word or key"
+                                required>
+                        </div>
                     </div>
+
+
+                    <button type="submit" class="signup-btn" id="submitBtn">Create Account</button>
+                </form>
+
+                <div class="auth-footer" style="text-align: center;">
+                    Already have an account? <a href="/login">Sign In</a>
                 </div>
-
-                <div class="form-group">
-                    <label for="secretKey">
-                        Secret Key
-                        <span class="info-icon-container">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="custom-tooltip">This key is required to reset your password if you forget it.
-                                Keep it memorable!</span>
-                        </span>
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-key"></i>
-                        <input type="password" id="secretKey" name="secretKey" placeholder="A memorable word or key"
-                            required>
-                    </div>
-                </div>
-
-
-                <button type="submit" class="signup-btn" id="submitBtn">Create Account</button>
-            </form>
-
-            <div class="auth-footer">
-                Already have an account? <a href="/login">Sign In</a>
             </div>
         </div>
     </div>

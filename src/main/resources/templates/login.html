@@ -21,7 +21,7 @@
 
         .auth-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 900px;
             padding: 2rem;
             position: relative;
         }
@@ -31,10 +31,48 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 24px;
-            padding: 3rem 2.5rem;
+            padding: 0;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 1;
+            display: flex;
+            overflow: hidden;
+            min-height: 500px;
+        }
+
+        .auth-left {
+            flex: 1;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .auth-right {
+            flex: 1.2;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .auth-left-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .auth-left-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .auth-card::before {
@@ -270,12 +308,13 @@
 
         @media (max-width: 768px) {
             body {
-                overflow: hidden !important;
-                height: 100dvh;
+                overflow: auto !important;
+                height: auto;
+                padding: 2rem 0;
             }
 
             .auth-container {
-                height: 100dvh;
+                height: auto;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -283,13 +322,20 @@
             }
 
             .auth-card {
+                padding: 0;
+                max-height: none;
+                overflow-y: visible;
+                flex-direction: column;
+            }
+
+            .auth-left {
+                padding: 2rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .auth-right {
                 padding: 2rem 1.5rem;
-                max-height: 95dvh;
-                overflow-y: auto;
-                scrollbar-width: none;
-                /* Firefox */
-                -ms-overflow-style: none;
-                /* IE 10+ */
             }
 
             .auth-card::-webkit-scrollbar {
@@ -325,50 +371,59 @@
 
     <div class="auth-container">
         <div class="auth-card">
-            <div class="logo-section">
-                <img src="/images/QuestBank.png" alt="QuestBank Logo" class="auth-logo-icon">
-                <h1 class="auth-title">Login to your Account</h1>
-                <p class="auth-subtitle">Explore the Intelligent QuestBank platform</p>
+            <div class="auth-left">
+                <img src="/images/QuestBank.png" alt="QuestBank Logo" class="auth-logo-icon"
+                    style="width: 80px; height: 80px; filter: brightness(1) drop-shadow(0 0 20px rgba(79,70,229,0.5)); margin-bottom: 1.5rem;">
+                <h1 class="auth-left-title">Welcome Back!</h1>
+                <p class="auth-left-subtitle">Sign in to continue your journey with the Intelligent QuestBank platform.
+                    Manage your questions, generate papers, and more.</p>
             </div>
+            <div class="auth-right">
+                <div class="logo-section" style="align-items: flex-start; margin-bottom: 2rem;">
+                    <h1 class="auth-title" style="font-size: 1.75rem;">Sign In</h1>
+                    <p class="auth-subtitle">Enter your credentials to access your account</p>
+                </div>
 
-            <div id="loginError" class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <span id="errorText">Invalid email or password.</span>
-            </div>
+                <div id="loginError" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText">Invalid email or password.</span>
+                </div>
 
-            <div th:if="${param.logout}" class="error-message"
-                style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); display: flex;">
-                <i class="fas fa-check-circle"></i>
-                Logged out successfully.
-            </div>
+                <div th:if="${param.logout}" class="error-message"
+                    style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); display: flex;">
+                    <i class="fas fa-check-circle"></i>
+                    Logged out successfully.
+                </div>
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Email Address</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="username" name="email" placeholder="name@company.com" required>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="username" name="email" placeholder="name@company.com" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        </div>
                     </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
+                        <a href="javascript:void(0)" id="openResetModal"
+                            style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none;">Reset
+                            Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+                </form>
+
+                <div class="auth-footer" style="text-align: center;">
+                    Don't have an account? <a href="/signup">Create account</a>
                 </div>
-
-                <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
-                    <a href="javascript:void(0)" id="openResetModal"
-                        style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none;">Reset Password?</a>
-                </div>
-
-                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
-            </form>
-
-            <div class="auth-footer">
-                Don't have an account? <a href="/signup">Create account</a>
             </div>
         </div>
     </div>
